@@ -18,7 +18,7 @@
 		"enable": false,
 		"ignoreCommand": []
 	},
-	"adminBot": [],
+	"adminBot": [""],
 	"whiteListMode": {
 		"enable": false,
 		"whiteListIds": [],
@@ -38,14 +38,15 @@
 		"notes": "(1) type selects 'json' or 'sqlite' or 'mongodb'. If you choose mongodb, enter uri connect mongodb in the uriMongodb section, instructions to get uri connect mongodb at: https://youtu.be/z1f9urHW5xY. I recommend using 'mongodb' or 'sqlite', json is not recommended because it is not stable. (2) when you set autoSyncWhenStart to true, the bot will automatically synchronize the data in the database when starting the bot, this will make the bot start slower. (3) when you set autoRefreshThreadInfoFirstTime to true, the bot will automatically refresh the thread information when get first message from the thread since starting the bot"
 	},
 	"timeZone": "Asia/Ho_Chi_Minh",
-	"credentials": {
+	 "credentials": {
     "gmailAccount": {
-      "email": "neoaz69x@gmail.com",
-      "clientId": "174744836003-5um5f2t77dh7fke482juut6rlkmdg8vr.apps.googleusercontent.com",
-      "clientSecret": "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",
-      "refreshToken": "1//04U5OBRRhnu0ICgYIARAAGAQSNwF-L9Ir9PD-m7XnKN8T8SCN9lJ0Hzs6kZRyo4Sy5ek143HlpUP8CPoVQFuP3QSpAY2LsCBBnOc",
+      "email": "andylabaco@gmail.com",
+      "clientId": "96871167660-5js0qjdlpr2mcd331kv5obpifev5j69r.apps.googleusercontent.com",
+      "clientSecret": "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",
+      "refreshToken": "1//04qK_zxJkdK7RCgYIARAAGAQSNwF-L9IrZOdI4prCgpqvAoDEvn-HpuSugKxBTRNoGS37QwxfAWJUCehSKhdas26xOh-SjmdR4uw",
       "apiKey": ""
-		},
+    },
+		 
 		"gRecaptcha": {
       "siteKey": "6Ldu4R0qAAAAAJrUKnTYx1AaUtVIUCtye1UE_ohw",
       "secretKey": "6Ldu4R0qAAAAAFauKulV8aV2Z8uowe1ujXG3K5iR"
