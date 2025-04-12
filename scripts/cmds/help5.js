@@ -7,7 +7,7 @@ const doNotDelete = "[megan ]"; // changing this wont change the goatbot V2 of l
 
 module.exports = {
   config: {
-    name: "help5",
+    name: "help",
     version: "1.17",
     author: "NTKhang", // original author Kshitiz // edit Aesther
     countDown: 5,
