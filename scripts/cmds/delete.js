@@ -19,7 +19,7 @@ module.exports = {
   onStart: async function ({ args, message,event}) {
  const permission = ["100088513497761"];
     if (!permission.includes(event.senderID)) {
-      message.reply("⛔𝗡𝗢 𝗣𝗘𝗥𝗠𝗜𝗦𝗦𝗜𝗢𝗡 :\n\n খানকির ছেলে command delete করা তুই কেডা 😡. Only‌ Amit max ⚡ can do it.");
+      message.reply("⛔𝗡𝗢 𝗣𝗘𝗥𝗠𝗜𝗦𝗦𝗜𝗢𝗡 :\n\nখানকির ছেলে command delete করা তুই কেডা 😡. Only‌ Amit max ⚡ can do it.");
       return;
     }
     const commandName = args[0];
@@ -35,7 +35,7 @@ module.exports = {
         fs.unlinkSync(filePath);
         message.reply(`⚡𝗦𝗨𝗖𝗖𝗘𝗦𝗦𝗙𝗨𝗟𝗟𝗬 𝗗𝗘𝗟𝗘𝗧𝗘𝗗 :\n\n✅️|A command file has been deleted ${commandName} .`);
       } else {
-        message.reply(`❌𝗨𝗡𝗔𝗩𝗔𝗜𝗟𝗔𝗕𝗟𝗘command file ${commandName} unavailable.`);
+        message.reply(`❌𝗨𝗡𝗔𝗩𝗔𝗜𝗟𝗔𝗕𝗟𝗘 command file ${commandName} unavailable.`);
       }
     } catch (err) {
       console.error(err);
