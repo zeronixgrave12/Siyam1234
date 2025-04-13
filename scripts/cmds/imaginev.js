@@ -11,7 +11,7 @@ const Api = async () => {
 
 module.exports = {
   config: {
-    name: "imaginev",
+    name: "imaginev2",
     aliases: ["iv","imgv"],
     version: "1.6.9",
     role: 0,
