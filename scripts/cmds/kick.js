@@ -1,6 +1,7 @@
 module.exports = {
 	config: {
 		name: "kick",
+		aliases:["kik"],
 		version: "1.3",
 		author: "NTKhang",
 		countDown: 5,
@@ -21,7 +22,7 @@ module.exports = {
 			needAdmin: "Vui lòng thêm quản trị viên cho bot trước khi sử dụng tính năng này"
 		},
 		en: {
-			needAdmin: "Please add admin for bot before using this feature"
+			needAdmin: "মাদারচোদ আগে গ্রুপের এডমিন দে 😒"
 		}
 	},
 
