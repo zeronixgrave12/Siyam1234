@@ -31,7 +31,7 @@ module.exports.onChat = async ({ api, event, usersData, commandName }) => {
         if (err) {
           console.error(err);
         } else {
-          api.sendMessage({body: `${await usersData.getName(senderID)} has been removed for spamming.\nUser ID: ${senderID}\n React in this message to add him again.`}, threadID, (error,info) => {
+          api.sendMessage({body: `${await usersData.getName(senderID)} বেশি বাল পাকনামির কারণে removed দিলাম 🚨.\nUser ID: ${senderID}\n React দে আবার এড দিই বলদ রে 😏.`}, threadID, (error,info) => {
               global.GoatBot.onReaction.set(info.messageID, { 
                   commandName, 
                   uid: senderID,
