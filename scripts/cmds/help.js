@@ -85,16 +85,17 @@ module.exports = {
           .replace(/{p}/g, prefix)
           .replace(/{n}/g, configCommand.name);
 
-        const response = `
- 🔖 ᴄᴏᴍᴍᴀɴᴅ ɪɴꜰᴏ 🔖
- 
-  📜ᴄᴏᴍᴍᴀɴᴅ: ${configCommand.name}
-  🪐ᴅᴇꜱᴄʀɪᴘᴛɪᴏɴ: ${longDescription}
-  🏷️ᴀʟɪᴀꜱᴇꜱ: ${configCommand.aliases ? configCommand.aliases.join(", ") : "None"}
-  🛸ᴠᴇʀꜱɪᴏɴ: ${configCommand.version || "1.0"}
-  🚨ᴘᴇʀᴍɪꜱꜱɪᴏɴ: ${roleTextToString(configCommand.role)}
-  🕰️ᴛɪᴍᴇ ᴘᴇʀ ᴜꜱᴀɢᴇ: ${configCommand.countDown || 1}s
-
+        const response = `━━━━━━━━━━━━━━━━━♡
+   📜ᴄᴏᴍᴍᴀɴᴅ ɪɴꜰᴏ 🔖
+   📜ᴄᴏᴍᴍᴀɴᴅ: ${configCommand.name}
+   🪐ᴅᴇꜱᴄʀɪᴘᴛɪᴏɴ: ${longDescription}
+   🏷️ᴀʟɪᴀꜱᴇꜱ: ${configCommand.aliases ? configCommand.aliases.join(", ") : "None"}
+   🛸ᴠᴇʀꜱɪᴏɴ: ${configCommand.version || "1.0"}
+   🚨ᴘᴇʀᴍɪꜱꜱɪᴏɴ: ${roleTextToString(configCommand.role)}
+   🕰️ᴛɪᴍᴇ ᴘᴇʀ ᴜꜱᴀɢᴇ: ${configCommand.countDown || 1}s
+   🧾ɴᴏᴛɪᴄᴇ:
+    ꜱᴄʀɪᴘᴛꜱ ᴄᴏᴅɪɴɢ ʙʏ ᴀᴍɪᴛ ᴍᴀx ⚡ 
+   ━━━━━━━━━━━━━━━━━━ꔪ
 `;
 
         await message.reply(response);
