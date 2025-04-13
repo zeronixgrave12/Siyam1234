@@ -22,7 +22,7 @@ module.exports = {
 			syntaxError: "Vui lòng reply tin nhắn muốn gỡ của bot"
 		},
 		en: {
-			syntaxError: "Please reply the message you want to unsend"
+			syntaxError: "আরে বলদ যেটা unsend করবি ওই মেসেজ টা reply দে 😒"
 		}
 	},
 
