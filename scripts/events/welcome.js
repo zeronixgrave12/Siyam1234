@@ -1,4 +1,4 @@
-cmd install welcome.js const { getTime, drive } = global.utils;
+const { getTime, drive } = global.utils;
 if (!global.temp.welcomeEvent)
 	global.temp.welcomeEvent = {};
 
@@ -6,7 +6,7 @@ module.exports = {
 	config: {
 		name: "welcome",
 		version: "1.7",
-		author: "Amit Max",
+		author: "Amit Max ⚡",
 		category: "events"
 	},
 
