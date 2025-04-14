@@ -49,10 +49,10 @@ module.exports = {
 
       msg += `🔖 Bot has: ${commands.size} Commands\n`;
       msg += `📜 Use: ${prefix}help cmdName for details\n\n`;
-      msg += `👑 Owner: ᴀᴍɪᴛ ᴍᴀx ⚡ \n`;
+      msg += `👑 Owner: \n`;
 
       const helpListImages = [
-        ''
+        'https://i.postimg.cc/858zKdyz/221887.gif'
       ];
       const helpListImage = helpListImages[Math.floor(Math.random() * helpListImages.length)];
 
@@ -110,4 +110,4 @@ function roleTextToString(roleText) {
     case 2: return "2 (Bot Admin Only)";
     default: return "Unknown Permission";
   }
-     }
+            }
