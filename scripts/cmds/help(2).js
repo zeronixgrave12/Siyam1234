@@ -13,7 +13,7 @@ const characters = "";
 
 module.exports = {
 	config: {
-		name: "help3",
+		name: "help2",
 		version: "1.9",
 		author: "Elohime",
 		countDown: 5,
