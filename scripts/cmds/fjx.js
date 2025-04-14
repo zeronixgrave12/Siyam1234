@@ -21,14 +21,14 @@ const aspectRatioMap = {
 module.exports = {
   config: {
     name: "fjx",
-    author: "made by Siam the king 👄 (siam vai ar bow sexy 🥵)",
-    version: "1.2",
+    author: "Vincenzo",
+    version: "1.3",
     cooldowns: 5,
     role: 0,
     shortDescription: "Generate a single AI image",
     longDescription: "Generates one image based on a prompt and aspect ratio. Also supports different engines.",
     category: "AI",
-    guide: "{p}fjx <prompt> [--ar <ratio>] [--nijiv5 | --xl | --flux]"
+    guide: "{p}fjx <prompt> [--ar <ratio>] [--nijiv5 | --xl | --flux | --alya]"
   },
 
   onStart: async function ({ message, args, api, event }) {
@@ -49,6 +49,8 @@ module.exports = {
           engine = "xl";
         } else if (args[i] === "--flux") {
           engine = "flux";
+        } else if (args[i] === "--alya") {
+          engine = "alya";
         } else {
           prompt += args[i] + " ";
         }
