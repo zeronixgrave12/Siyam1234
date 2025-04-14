@@ -6,7 +6,7 @@ const { commands, aliases } = global.GoatBot;
 
 module.exports = {
   config: {
-    name: "help2",
+    name: "help",
     version: "1.17",
     author: "NTKhang",
     countDown: 5,
@@ -49,7 +49,7 @@ module.exports = {
 
       msg += `🔖 Bot has: ${commands.size} Commands\n`;
       msg += `📜 Use: ${prefix}help cmdName for details\n\n`;
-      msg += `👑 Owner: \n`;
+      msg += `👑 Owner:ᴀᴍɪᴛ ᴍᴀx ⚡ \n`;
 
       const helpListImages = [
         'https://i.postimg.cc/858zKdyz/221887.gif'
