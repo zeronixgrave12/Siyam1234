@@ -50,11 +50,12 @@ module.exports = {
 				const mins = Math.floor((uptime % 3600) / 60);
 				const seconds = Math.floor(uptime % 60);
 
-				return `🕰️Uptime:
-                                        ${days}⚡ day(s),
-                                        ${hours}🪐 hour(s),
-					${mins}⌚ minute(s),
-	                                ${seconds}⌛ second(s)`;
+				return 
+				`🕰️Uptime:
+                                ${days} day ⚡,
+                                ${hours} hour 🪐,
+				${mins} minute ⌚,
+	                        ${seconds} second ⏳`;
 		},
 
 		onStart: async ({ api, event }) => {
