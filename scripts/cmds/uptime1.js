@@ -50,7 +50,11 @@ module.exports = {
 				const mins = Math.floor((uptime % 3600) / 60);
 				const seconds = Math.floor(uptime % 60);
 
-				return `🕰️Uptime: ${days} day(s), ${hours} hour(s), ${mins} minute(s), and ${seconds} second(s)`;
+				return `🕰️Uptime:
+                                        ${days}⚡ day(s),
+                                        ${hours}🪐 hour(s),
+					${mins}⌚ minute(s),
+	                                ${seconds}⌛ second(s)`;
 		},
 
 		onStart: async ({ api, event }) => {
@@ -70,7 +74,7 @@ module.exports = {
 
 				const timeStart = Date.now();
 				const uptimeMessage = module.exports.getUptime(uptimeSeconds);
-				const returnResult = `BOT has been working for ${uptimeMessage}\n\n🗿 Cpu usage: ${usage.cpu.toFixed(1)}%\n🌡️ RAM usage: ${module.exports.byte2mb(usage.memory)}\n🪐 Cores: ${os.cpus().length}\n⚡ Ping: ${Date.now() - timeStart}ms\n🖥️ Operating System Platform: ${osInfo.platform}\n🖥️ System CPU Architecture: ${osInfo.architecture}`;
+				const returnResult = `ᴀᴍɪᴛ ᴍᴀx ⚡ ${uptimeMessage}\n\n🗿 Cpu usage: ${usage.cpu.toFixed(1)}%\n🌡️ RAM usage: ${module.exports.byte2mb(usage.memory)}\n🪐 Cores: ${os.cpus().length}\n⚡ Ping: ${Date.now() - timeStart}ms\n🖥️ Operating System Platform: ${osInfo.platform}\n💻 System CPU Architecture: ${osInfo.architecture}`;
 
 				await module.exports.saveStartTimestamp(startTime); // Save the start time again to ensure it's updated
 				return api.sendMessage(returnResult, event.threadID, event.messageID);
