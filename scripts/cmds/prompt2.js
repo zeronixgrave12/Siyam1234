@@ -3,8 +3,8 @@ const ok = 'xyz';
 
 module.exports = {
   config: {
-    name: "prompt",
-    aliases: ["p"],
+    name: "prompt2",
+    aliases: ["p2"],
     version: "1.2",
     author: "Team Calyx",
     countDown: 5,
