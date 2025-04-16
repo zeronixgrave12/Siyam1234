@@ -25,7 +25,7 @@ module.exports = {
   onStart: async function ({ api, event, args }) {
     if (!args[0]) {
       {
-        api.setMessageReaction("😘", event.messageID, (err) => {}, true);
+        api.setMessageReaction("🥳", event.messageID, (err) => {}, true);
       }
       const albumOptions = [
         "𝗙𝘂𝗻𝗻𝘆 𝘃𝗶𝗱𝗲𝗼",
@@ -40,10 +40,10 @@ module.exports = {
         "𝗥𝗮𝗻𝗱𝗼𝗺 𝗣𝗵𝗼𝘁𝗼",
       ];
       const message =
-        "❤️‍🩹 𝗖𝗵𝗼𝗼𝘀𝗲 𝗮𝗻 𝗼𝗽𝘁𝗶𝗼𝗻𝘀 𝗕𝗮𝗯𝘆 <💝\n" +
+        "🪐 𝗖𝗵𝗼𝗼𝘀𝗲 𝗮𝗻 𝗼𝗽𝘁𝗶𝗼𝗻𝘀 𝗕𝗮𝗯𝘆 🪐\n" +
         "✿━━━━━━━━━━━━━━━━━━━━━━━✿\n" +
         albumOptions
-          .map((option, index) => `${index + 1}. ${option} 🐤`)
+          .map((option, index) => `${index + 1}. ${option} 💐`)
           .join("\n") +
         "\n✿━━━━━━━━━━━━━━━━━━━━━━━✿";
 
@@ -63,7 +63,7 @@ module.exports = {
       );
     } else if (args[0] === "2") {
       {
-        api.setMessageReaction("😘", event.messageID, (err) => {}, true);
+        api.setMessageReaction("🥳", event.messageID, (err) => {}, true);
       }
       const albumOptions = [
         "𝗔𝗲𝘀𝘁𝗵𝗲𝘁𝗶𝗰 𝗩𝗶𝗱𝗲𝗼",
@@ -77,10 +77,10 @@ module.exports = {
         "𝗙𝗿𝗶𝗲𝗻𝗱𝘀 𝗩𝗶𝗱𝗲𝗼",
       ];
       const message =
-        "❤️‍🩹 𝗖𝗵𝗼𝗼𝘀𝗲 𝗮𝗻 𝗼𝗽𝘁𝗶𝗼𝗻𝘀 𝗕𝗮𝗯𝘆 <💝\n" +
+        "🪐 𝗖𝗵𝗼𝗼𝘀𝗲 𝗮𝗻 𝗼𝗽𝘁𝗶𝗼𝗻𝘀 𝗕𝗮𝗯𝘆 🪐\n" +
         "✿━━━━━━━━━━━━━━━━━━━━━━━✿\n" +
         albumOptions
-          .map((option, index) => `${index + 11}. ${option} 🐤`)
+          .map((option, index) => `${index + 11}. ${option} 💐`)
           .join("\n") +
         "\n✿━━━━━━━━━━━━━━━━━━━━━━━✿";
 
@@ -345,8 +345,8 @@ module.exports = {
         );
         const imgUrl = res.data.data;
         const ex = path.extname(imgUrl);
-        const imgRes = await axios.get(imgUrl, { responseType: "arraybuffer" });
-        const filename = __dirname + `/assets/dipto_{Date.now()}.mp4`;
+        const imgRes = await axios.get(imgUrl, { responseType: "arraybuffer" , headers: { 'User-Agent': 'Mozilla/5.0' } });
+        const filename = __dirname + `/assets/dipto_${Date.now()}.mp4`;
         fs.writeFileSync(filename, Buffer.from(imgRes.data, "binary"));
         api.sendMessage(
           {
