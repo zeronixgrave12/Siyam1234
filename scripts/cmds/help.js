@@ -43,7 +43,7 @@ module.exports = {
       Object.keys(categories).forEach((category) => {
         if (category !== "info") {
           const names = categories[category].commands.sort().join(" • ");
-          msg += `✨ ${category.toUpperCase()}: ${names}\n\n`;
+          msg += `🪐 ${category.toUpperCase()}: ${names}\n\n`;
         }
       });
 
