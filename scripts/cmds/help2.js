@@ -66,7 +66,7 @@ module.exports = {
           if (!error) {
             setTimeout(() => {
               api.unsendMessage(messageInfo.messageID);
-            }, 25000);
+            }, 70000);
           }
         },
         event.messageID
