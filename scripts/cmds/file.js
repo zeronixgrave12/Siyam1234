@@ -29,7 +29,7 @@ module.exports = {
     const safeFileName = path.basename(fileName); // নিরাপদ ফাইলনাম
     const filePath = path.join(__dirname, `${safeFileName}.js`);
     if (!fs.existsSync(filePath)) {
-      return api.sendMessage(`এই নামে কোনো File  নেই তোমার 🥲: ${safeFileName}.js`, event.threadID, event.messageID);
+      return api.sendMessage(`এই নামে কোনো File নেই তোমার 🥲: ${safeFileName}.js`, event.threadID, event.messageID);
     }
 
     const fileContent = fs.readFileSync(filePath, 'utf8');
