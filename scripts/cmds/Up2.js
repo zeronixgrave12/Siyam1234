@@ -2,7 +2,7 @@ const os = require("os");
 
 module.exports = {
   config: {
-    name: "up9",
+    name: "up2",
     version: "4.0-up7",
     author: "Amit⚡Max | Mod by Xrotick",
     role: 0,
@@ -49,13 +49,13 @@ module.exports = {
       const finalMessage = `
 🪐 𝐁𝐎𝐓 𝐔𝐏𝐓𝐈𝐌𝐄 𝐒𝐓𝐀𝐓𝐒 🪐
 
-🕰️ 𝐔𝐩𝐭𝐢𝐦𝐞: ${uptimeFormatted}
-🕓 𝐓𝐢𝐦𝐞 (𝐃𝐡𝐚𝐤𝐚): ${time}
-📆 𝐃𝐚𝐭𝐞: ${date}
+🕰️ ᴜᴘᴛɪᴍᴇ: ${uptimeFormatted}
+🕓 ᴛɪᴍᴇ: ${time}
+📆 ᴅᴀᴛᴇ: ${date}
 
-💾 𝐑𝐀𝐌 𝐔𝐬𝐚𝐠𝐞: ${memoryUsage} MB
-🖥️ 𝐎𝐒: ${os.platform()} (${os.arch()})
-🛠️ 𝐍𝐨𝐝𝐞: ${process.version}
+💾 ʀᴀᴍ ᴜꜱᴀɢᴇ: ${memoryUsage} MB
+🖥️ ᴏꜱ: ${os.platform()} (${os.arch()})
+🛠️ ɴᴏᴅᴇ: ${process.version}
       `.trim();
 
       await delay(300);
