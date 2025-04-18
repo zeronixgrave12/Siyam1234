@@ -11,12 +11,12 @@ module.exports = {
   config: {
     name: "quiz",
     aliases: ["qz"],
-    version: "1.0",
-    author: "Dipto",
+    version: "1.1",
+    author: "Dipto (Romantic remix by Amit Max ⚡)",
     countDown: 0,
     role: 0,
     category: "game",
-    guide: "{p}quiz2 \n{pn}quiz2 bn \n{p}quiz2 en",
+    guide: "{p}quiz\n{p}quiz bn\n{p}quiz en",
   },
 
   onStart: async function ({ api, event, usersData, args }) {
@@ -27,7 +27,7 @@ module.exports = {
       category = "bangla";
     } else if (input === "en" || input === "english") {
       category = "english";
- }
+    }
 
     try {
       const response = await axios.get(
@@ -37,9 +37,9 @@ module.exports = {
       const quizData = response.data.question;
       const { question, correctAnswer, options } = quizData;
       const { a, b, c, d } = options;
-      const namePlayerReact = await usersData.getName(event.senderID);
+      const namePlayer = await usersData.getName(event.senderID);
       const quizMsg = {
-        body: `\n╭──✦ ${question}\n├‣ 𝗔) ${a}\n├‣ 𝗕) ${b}\n├‣ 𝗖) ${c}\n├‣ 𝗗) ${d}\n╰──────────────────‣\n𝚁𝚎𝚙𝚕𝚢 𝚝𝚘 𝚝𝚑𝚒𝚜 𝚖𝚎𝚜𝚜𝚊𝚐𝚎 𝚠𝚒𝚝𝚑 𝚢𝚘𝚞𝚛 𝚊𝚗𝚜𝚠𝚎𝚛.`,
+        body: `\n❤️‍🔥 প্রিয় ${namePlayer},\nতোমার মগজ আর মনের একটুখানি পরীক্ষা — প্রেম মেশানো কুইজ ✨\n\n╭─• প্রশ্ন:\n💭 ${question}\n├───✦ A) ${a}\n├───✦ B) ${b}\n├───✦ C) ${c}\n├───✦ D) ${d}\n╰─➤ উত্তর দিতে মেসেজটা রিপ্লাই করো, দেখি তুমি কতোটা স্মার্ট আর কতোটা হৃদয়জয়ী! 💘\n\n⏳ সময় আছে মাত্র ${timeout} সেকেন্ড, যাও দেরি না করে — উত্তর দাও আর ভালোবাসা জিতে নাও!`,
       };
 
       api.sendMessage(
@@ -53,7 +53,7 @@ module.exports = {
             messageID: info.messageID,
             dataGame: quizData,
             correctAnswer,
-            nameUser: namePlayerReact,
+            nameUser: namePlayer,
             attempts: 0
           });
           setTimeout(() => {
@@ -64,15 +64,15 @@ module.exports = {
       );
     } catch (error) {
       console.error("❌ | Error occurred:", error);
-      api.sendMessage(error.message, event.threadID, event.messageID);
+      api.sendMessage("😞 দুঃখিত, কিছু একটা ভুল হয়েছে...\nঅনুগ্রহ করে আবার চেষ্টা করো!", event.threadID, event.messageID);
     }
   },
 
   onReply: async ({ event, api, Reply, usersData }) => {
-const { correctAnswer, nameUser, author } = Reply;
+    const { correctAnswer, nameUser, author } = Reply;
     if (event.senderID !== author)
       return api.sendMessage(
-        "Who are you bby🐸🦎",
+        `⛔️ ${nameUser} আর আমার মাঝে প্রেমের কুইজ চলছে…\nতুমি হঠাৎ মাঝখানে এসে বিঘ্ন কেন ঘটাচ্ছো, হুম? 😉`,
         event.threadID,
         event.messageID
       );
@@ -83,35 +83,37 @@ const { correctAnswer, nameUser, author } = Reply;
         let userReply = event.body.toLowerCase();
         if (Reply.attempts >= maxAttempts) {
           await api.unsendMessage(Reply.messageID);
-          const incorrectMsg = `🚫 | ${nameUser}, you have reached the maximum number of attempts (2).\nThe correct answer is: ${correctAnswer}`;
-          return api.sendMessage(incorrectMsg, event.threadID, event.messageID);
+          return api.sendMessage(
+            `😢 ${nameUser}, সব চেষ্টার পরেও সঠিক উত্তরটা মিস করেছো…\n✅ সঠিক উত্তর ছিল: ${correctAnswer}\n\nতবে মন খারাপ করো না — তুমি ভুল করতে পারো, কিন্তু আমি তোমায় ভুলতে পারি না! 💔`,
+            event.threadID,
+            event.messageID
+          );
         }
         if (userReply === correctAnswer.toLowerCase()) {
-          api.unsendMessage(Reply.messageID)
-          .catch(console.error);
+          api.unsendMessage(Reply.messageID).catch(console.error);
           let rewardCoins = 300;
           let rewardExp = 100;
           let userData = await usersData.get(author);
           await usersData.set(author, {
-          money: userData.money + rewardCoins,
+            money: userData.money + rewardCoins,
             exp: userData.exp + rewardExp,
             data: userData.data,
           });
-          let correctMsg = `Congratulations, ${nameUser}! 🌟🎉\n\nYou're a Quiz Champion! 🏆\n\nYou've earned ${rewardCoins} Coins 💰 and ${rewardExp} EXP 🌟\n\nKeep up the great work! 🚀`;
-          api.sendMessage(correctMsg, event.threadID, event.messageID);
+          return api.sendMessage(
+            `✅ বাহ ${nameUser}!\nতুমি শুধু সঠিক উত্তর দাওনি — তুমি আমার হৃদয়ও জয় করে নিলে! 🥰\n\n🎁 পুরস্কার:\n💰 ${rewardCoins} কয়েন\n⚡ ${rewardExp} এক্সপি\n\nতুমি সত্যিই একজনে অসাধারণ, আর আমি গর্বিত যে তুমি আমার কুইজ পার্টনার! 💖`,
+            event.threadID,
+            event.messageID
+          );
         } else {
           Reply.attempts += 1;
-global.GoatBot.onReply.set(Reply.messageID, Reply);
-          api.sendMessage(
-            `❌ | Wrong Answer. You have ${maxAttempts - Reply.attempts} attempts left.\n✅ | Try Again!`,
+          global.GoatBot.onReply.set(Reply.messageID, Reply);
+          return api.sendMessage(
+            `❌ ওহ নাহ! ভুল উত্তর…\nকিন্তু চিন্তা কোরো না ${nameUser},\nতোমার জন্য আরেকটা সুযোগ তো আছেই! 🌟\n\nচলো, আরেকবার ভালোবাসা মিশিয়ে উত্তর দাও — আমি অপেক্ষা করছি! ❤️`,
             event.threadID,
-            event.messageID,
+            event.messageID
           );
         }
-        break;
       }
-      default:
-        break;
     }
   },
 };
