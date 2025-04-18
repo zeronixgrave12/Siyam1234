@@ -12,7 +12,7 @@ module.exports = {
     aliases: ["whoishe", "whoisshe", "whoami", "atake"],
     version: "1.0",
     role: 0,
-    author: "Dipto",
+    author: "Dipto | styled by Amit Max ⚡",
     Description: "Get user information and profile photo",
     category: "information",
     countDown: 10,
@@ -78,22 +78,22 @@ module.exports = {
     const position = userInfo[uid].type;
 
     const userInformation = `
-╭────[ 𝐔𝐒𝐄𝐑 𝐈𝐍𝐅𝐎 ]
-├‣ 𝙽𝚊𝚖𝚎: ${userInfo[uid].name}
-├‣ 𝙶𝚎𝚗𝚍𝚎𝚛: ${genderText}
-├‣ 𝚄𝙸𝙳: ${uid}
-├‣ 𝙲𝚕𝚊𝚜𝚜: ${position ? position?.toUpperCase() : "𝙽𝚘𝚛𝚖𝚊𝚕 𝚄𝚜𝚎𝚛🥺"}
-├‣ 𝚄𝚜𝚎𝚛𝚗𝚊𝚖𝚎: ${userInfo[uid].vanity ? userInfo[uid].vanity : "𝙽𝚘𝚗𝚎"}
-├‣ 𝙿𝚛𝚘𝚏𝚒𝚕𝚎 𝚄𝚁𝙻: ${userInfo[uid].profileUrl}
-├‣ 𝙱𝚒𝚛𝚝𝚑𝚍𝚊𝚢: ${userInfo[uid].isBirthday !== false ? userInfo[uid].isBirthday : "𝙿𝚛𝚒𝚟𝚊𝚝𝚎"}
-├‣ 𝙽𝚒𝚌𝚔𝙽𝚊𝚖𝚎: ${userInfo[uid].alternateName || "𝙽𝚘𝚗𝚎"}
-╰‣ 𝙵𝚛𝚒𝚎𝚗𝚍 𝚠𝚒𝚝𝚑 𝚋𝚘𝚝: ${userInfo[uid].isFriend ? "𝚈𝚎𝚜✅" : "𝙽𝚘❎"}
+╭────[ ᴜsᴇʀ ɪɴғᴏ ]
+├‣ ✨ ɴᴀᴍᴇ: ${userInfo[uid].name.toUpperCase()}
+├‣ ${genderText === "𝙶𝚒𝚛𝚕🙋🏻‍♀️" ? "🙋🏻‍♀️" : genderText === "Boy🙋🏻‍♂️" ? "🙋🏻‍♂️" : "🤷🏻‍♂️"} ɢᴇɴᴅᴇʀ: ${genderText}
+├‣ 🆔 ᴜɪᴅ: ${uid}
+├‣ 🏷️ ᴄʟᴀss: ${position ? position.toUpperCase() : "𝙽𝚘𝚛𝚖𝚊𝚕 𝚄𝚜𝚎𝚛🥺"}
+├‣ 🔤 ᴜsᴇʀɴᴀᴍᴇ: ${userInfo[uid].vanity ? userInfo[uid].vanity.toUpperCase() : "𝙽𝚘𝚗𝚎"}
+├‣ 🔗 ᴘʀᴏғɪʟᴇ ᴜʀʟ: ${userInfo[uid].profileUrl}
+├‣ 🎂 ʙɪʀᴛʜᴅᴀʏ: ${userInfo[uid].isBirthday !== false ? userInfo[uid].isBirthday : "𝙿𝚛𝚒𝚟𝚊𝚝𝚎"}
+├‣ ✍️ ɴɪᴄᴋɴᴀᴍᴇ: ${userInfo[uid].alternateName ? userInfo[uid].alternateName.toUpperCase() : "𝙽𝚘𝚗𝚎"}
+╰‣ 🤖 ғʀɪᴇɴᴅ ᴡɪᴛʜ ʙᴏᴛ: ${userInfo[uid].isFriend ? "𝚈𝚎𝚜✅" : "𝙽𝚘❎"}
 
-╭─────[ 𝐔𝐒𝐄𝐑 𝐒𝐓𝐀𝐓𝐒 ]
-├‣ 𝙼𝚘𝚗𝚎𝚢: $${formatMoney(money)}
-├‣ 𝚁𝚊𝚗𝚔: #${rank}/${allUser.length}
-├‣ 𝙼𝚘𝚗𝚎𝚢 𝚁𝚊𝚗𝚔: #${moneyRank}/${allUser.length}
-╰‣ 𝙱𝚊𝚋𝚢 𝚝𝚎𝚊𝚌𝚑: ${babyTeach || 0}`;
+╭─────[ ᴜsᴇʀ sᴛᴀᴛs ]
+├‣ 💰 ᴍᴏɴᴇʏ: $${formatMoney(money)}
+├‣ 🏅 ʀᴀɴᴋ: #${rank}/${allUser.length}
+├‣ 💵 ᴍᴏɴᴇʏ ʀᴀɴᴋ: #${moneyRank}/${allUser.length}
+╰‣ 👶 ʙᴀʙʏ ᴛᴇᴀᴄʜ: ${babyTeach || 0}`;
 
     message.reply({
       body: userInformation,
