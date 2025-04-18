@@ -1,45 +1,64 @@
- const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
+
+const trashPath = path.join(__dirname, '..', 'trash');
+if (!fs.existsSync(trashPath)) fs.mkdirSync(trashPath);
+
+const pendingDeletes = {};
 
 module.exports = {
   config: {
     name: "delete",
     aliases: ["del"],
-    version: "1.0",
+    version: "2.0",
     author: "Amit max ⚡",
     countDown: 0,
     role: 2,
-    shortDescription: "Delete file and folders",
-    longDescription: "Delete file",
+    shortDescription: "Delete file with confirmation and restore support",
+    longDescription: "Move file to trash with confirmation. Supports restore.",
     category: "owner",
-    guide: "{pn}"
+    guide: "{pn} <filename>"
   },
 
-
-  onStart: async function ({ args, message,event}) {
- const permission = ["100088513497761"];
+  onStart: async function ({ args, message, event }) {
+    const permission = ["100088513497761"];
     if (!permission.includes(event.senderID)) {
-      message.reply("⛔𝗡𝗢 𝗣𝗘𝗥𝗠𝗜𝗦𝗦𝗜𝗢𝗡 :\n\nখানকির ছেলে command delete করা তুই কেডা 😡. Only‌ Amit max ⚡ can do it.");
-      return;
-    }
-    const commandName = args[0];
-
-    if (!commandName) {
-      return message.reply("Type the file name..");
+      return message.reply("⛔ NO PERMISSION:\n\nতুমি এই কমান্ড চালাতে পারবে না।");
     }
 
-    const filePath = path.join(__dirname, '..', 'cmds', `${commandName}`);
+    const fileName = args[0];
+    if (!fileName) return message.reply("⚠️ ফাইলের নাম লিখো: `{pn} filename.js`");
 
-    try {
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-        message.reply(`⚡𝗦𝗨𝗖𝗖𝗘𝗦𝗦𝗙𝗨𝗟𝗟𝗬 𝗗𝗘𝗟𝗘𝗧𝗘𝗗 :\n\n✅️|A command file has been deleted ${commandName} .`);
-      } else {
-        message.reply(`❌𝗨𝗡𝗔𝗩𝗔𝗜𝗟𝗔𝗕𝗟𝗘 command file ${commandName} unavailable.`);
+    const filePath = path.join(__dirname, '..', 'cmds', fileName);
+    const trashFilePath = path.join(trashPath, fileName);
+
+    if (!fs.existsSync(filePath)) {
+      return message.reply(`❌ ফাইল পাওয়া যায়নি: ${fileName}`);
+    }
+
+    pendingDeletes[event.senderID] = { filePath, trashFilePath, fileName };
+    return message.reply(`⚠️ আপনি কি নিশ্চিত যে আপনি *${fileName}* ডিলিট করতে চান?\n\n✅ হ্যাঁ লিখুন / ❌ না লিখুন (৬০ সেকেন্ডের মধ্যে)।`);
+  },
+
+  onChat: async function ({ message, event }) {
+    const data = pendingDeletes[event.senderID];
+    if (!data) return;
+
+    const text = message.body.toLowerCase();
+
+    if (text === 'হ্যাঁ' || text === 'yes') {
+      try {
+        fs.renameSync(data.filePath, data.trashFilePath);
+        delete pendingDeletes[event.senderID];
+        return message.reply(`✅ ফাইল *${data.fileName}* সফলভাবে trash ফোল্ডারে মুভ হয়েছে!`);
+      } catch (err) {
+        return message.reply(`❌ ডিলিট করতে সমস্যা হয়েছে: ${err.message}`);
       }
-    } catch (err) {
-      console.error(err);
-      message.reply(`⛔𝗘𝗥𝗥𝗢𝗥 \\Cannot be deleted because ${commandName}: ${err.message}`);
+    }
+
+    if (text === 'না' || text === 'no') {
+      delete pendingDeletes[event.senderID];
+      return message.reply("❎ ফাইল ডিলিট বাতিল করা হয়েছে।");
     }
   }
 };
