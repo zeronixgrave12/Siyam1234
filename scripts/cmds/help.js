@@ -8,20 +8,20 @@ module.exports = {
   config: {
     name: "help",
     version: "1.17",
-    author: "NTKhang",
+    author: "Amit Max ⚡",
     countDown: 5,
     role: 0,
     shortDescription: {
-      en: "View command usage and list all commands directly",
+      en: "View command usage and list all commands directly"
     },
     longDescription: {
-      en: "View command usage and list all commands directly",
+      en: "View command usage and list all commands directly"
     },
     category: "system",
     guide: {
-      en: "{pn} / help cmdName ",
+      en: "{pn} / help cmdName"
     },
-    priority: 1,
+    priority: 1
   },
 
   onStart: async function ({ api, message, args, event, threadsData, role }) {
@@ -38,18 +38,18 @@ module.exports = {
     }
 
     if (args.length === 0) {
-      let msg = `♡ All Commands Of This Bot ♡\n`;
+      let msg = `✧ ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅꜱ ʟɪꜱᴛ ✧\n\n`;
 
       Object.keys(categories).forEach((category) => {
         if (category !== "info") {
           const names = categories[category].commands.sort().join(" • ");
-          msg += `🪐 ${category.toUpperCase()}: ${names}\n\n`;
+          msg += `✨ ${category.toUpperCase()}: ${names}\n\n`;
         }
       });
 
-      msg += `🔖 Bot has: ${commands.size} Commands\n`;
-      msg += `📜 Use: ${prefix}help cmdName for details\n\n`;
-      msg += `👑 Owner:ᴀᴍɪᴛ ᴍᴀx ⚡ \n`;
+      msg += `📌 ᴛᴏᴛᴀʟ ᴄᴏᴍᴍᴀɴᴅꜱ: ${commands.size}\n`;
+      msg += `🧾 ᴛʏᴘᴇ: ${prefix}help [cmdName] ꜰᴏʀ ᴅᴇᴛᴀɪʟꜱ\n`;
+      msg += `👑 ᴏᴡɴᴇʀ: ᴀᴍɪᴛ ᴍᴀx ⚡`;
 
       const helpListImages = [
         'https://i.postimg.cc/858zKdyz/221887.gif'
@@ -77,7 +77,7 @@ module.exports = {
       const command = commands.get(commandName) || commands.get(aliases.get(commandName));
 
       if (!command) {
-        await message.reply(`❌ Command "${commandName}" not found.`);
+        await message.reply(`❌ ᴄᴏᴍᴍᴀɴᴅ "${commandName}" ɴᴏᴛ ꜰᴏᴜɴᴅ.`);
       } else {
         const configCommand = command.config;
         const longDescription = configCommand.longDescription?.en || "No description available.";
@@ -86,15 +86,19 @@ module.exports = {
           .replace(/{n}/g, configCommand.name);
 
         const response = `
-╭────── 📖 COMMAND INFO 📖 ──────╮
-│ Command: ${configCommand.name}
-│ Description: ${longDescription}
-│ Aliases: ${configCommand.aliases ? configCommand.aliases.join(", ") : "None"}
-│ Version: ${configCommand.version || "1.0"}
-│ Permission: ${roleTextToString(configCommand.role)}
-│ Time Per Usage: ${configCommand.countDown || 1}s
-│ 
-╰──────────────────────────────────╯
+╭━━━「 🔍 ᴄᴏᴍᴍᴀɴᴅ ɪɴꜰᴏ 」━━━╮
+┃ 🧩 ɴᴀᴍᴇ        : ${configCommand.name}
+┃ 🗂️ ᴄᴀᴛᴇɢᴏʀʏ    : ${configCommand.category?.toLowerCase() || "ᴜɴᴄᴀᴛᴇɢᴏʀɪᴢᴇᴅ"}
+┃ 📜 ᴅᴇꜱᴄʀɪᴘᴛɪᴏɴ : ${longDescription.toLowerCase()}
+┃ 🔁 ᴀʟɪᴀꜱᴇꜱ     : ${(configCommand.aliases?.join(", ") || "ɴᴏɴᴇ").toLowerCase()}
+┃ ⚙️ ᴠᴇʀꜱɪᴏɴ     : ${(configCommand.version || "1.0").toLowerCase()}
+┃ 🔐 ᴘᴇʀᴍɪꜱꜱɪᴏɴ  : ${roleTextToString(configCommand.role).toLowerCase()}
+┃ ⏱️ ᴄᴏᴏʟᴅᴏᴡɴ    : ${(configCommand.countDown || 1) + "ꜱ"}
+┃ 👑 ᴀᴜᴛʜᴏʀ      : ${(configCommand.author || "ᴜɴᴋɴᴏᴡɴ").toLowerCase()}
+┃
+┃ 📖 ᴜꜱᴀɢᴇ:
+┃ ${usage.toLowerCase()}
+╰━━━━━━━━━━━━━━━━━━━━╯
 `;
 
         await message.reply(response);
@@ -105,9 +109,9 @@ module.exports = {
 
 function roleTextToString(roleText) {
   switch (roleText) {
-    case 0: return "0 (All Users)";
-    case 1: return "1 (Group Admins)";
-    case 2: return "2 (Bot Admin Only)";
-    default: return "Unknown Permission";
+    case 0: return "0 (ᴀʟʟ ᴜꜱᴇʀꜱ)";
+    case 1: return "1 (ɢʀᴏᴜᴘ ᴀᴅᴍɪɴꜱ)";
+    case 2: return "2 (ʙᴏᴛ ᴀᴅᴍɪɴ ꜱ ᴏɴʟʏ)";
+    default: return "ᴜɴᴋɴᴏᴡɴ";
   }
-            }
+}
