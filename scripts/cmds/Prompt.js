@@ -4,8 +4,8 @@ const envAPI = 'https://connect-foxapi.onrender.com';
 const key = 'gaysex';
 module.exports = {
   config: {
-    name: "prompt",
-    aliases: ["p"],
+    name: "prompt2",
+    aliases: ["p2"],
     version: "1.1",
     author: "SiAM",
     countDown: 10,
