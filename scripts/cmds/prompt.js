@@ -11,7 +11,7 @@ function cleanPrompt(text) {
 module.exports = {
   config: {
     name: "prompt",
-    aliases: ["p", "p", "pro"],
+    aliases: ["p","pro"],
     version: "2.0",
     author: "SiAM x Calyx",
     countDown: 5,
