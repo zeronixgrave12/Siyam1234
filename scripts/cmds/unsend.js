@@ -1,28 +1,23 @@
 module.exports = {
 	config: {
 		name: "unsend",
-		aliases:["un","u","uns","unsent"],
+		aliases: ["un", "u", "uns", "unsent"],
 		version: "1.2",
-		author: "NTKhang",
+		author: "NTKhang | Modified by Amit Max ⚡",
 		countDown: 5,
 		role: 0,
 		description: {
-			vi: "Gỡ tin nhắn của bot",
-			en: "Unsend bot's message"
+			en: "ভুল হলে মুছে দিও… যেমন চুপচাপ ভালোবাসি তোমায় 🫣❤️"
 		},
 		category: "box chat",
 		guide: {
-			vi: "reply tin nhắn muốn gỡ của bot và gọi lệnh {pn}",
-			en: "reply the message you want to unsend and call the command {pn}"
+			en: "রিপ্লাই দাও মেসেজটাতে আর লিখো {pn}… কিছু কথা চিরকাল মনে রাখা যায় না 🥀"
 		}
 	},
 
 	langs: {
-		vi: {
-			syntaxError: "Vui lòng reply tin nhắn muốn gỡ của bot"
-		},
 		en: {
-			syntaxError: "আরে বলদ যেটা unsend করবি ওই মেসেজ টা reply দে 😒"
+			syntaxError: "রিপ্লাই করো মেসেজটায়… না হলে কীভাবে মুছবো? চলো হারিয়ে যাই চুপচাপ… 🫶💬"
 		}
 	},
 
