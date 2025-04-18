@@ -18,7 +18,7 @@ module.exports = {
   onStart: async function ({ message, args, api, event }) {
     const permission = ["100088513497761"];
     if (!permission.includes(event.senderID)) {
-      return api.sendMessage("⛔ Access Denied: খানকির ছেলে আর একবার File চালি তোর গুষ্টি চুদে দিব 😡", event.threadID, event.messageID);
+      return api.sendMessage("⛔ Access Denied: খানকির ছেলে আর একবার File চালি তোর গুষ্টি চুদে দিব 😡. Only‌ Amit max ⚡ can do it.", event.threadID, event.messageID);
     }
 
     const fileName = args[0];
