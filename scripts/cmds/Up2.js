@@ -2,102 +2,68 @@ const os = require("os");
 
 module.exports = {
   config: {
-    name: "up2",
-    version: "3.2",
-    author: "ᴀᴍɪᴛ⚡ᴍᴀx | Modified by Xrotick | Enhanced by ChatGPT",
+    name: "up9",
+    version: "4.0-up7",
+    author: "Amit⚡Max | Mod by Xrotick",
     role: 0,
-    shortDescription: { en: "Get stylish bot stats and uptime!" },
+    shortDescription: { en: "Stylish uptime with loading animation" },
     longDescription: {
-      en: "Displays bot uptime, user/thread/message stats, system info with stepped loading bar and local time (Dhaka)."
+      en: "Displays stylish uptime with current time/date and animated loading."
     },
     category: "system",
-    guide: {
-      en: "Use {p}up2 to view bot stats with stylish animation."
-    }
+    guide: { en: "{p}uptime" }
   },
 
-  onStart: async function ({ api, event, usersData, threadsData, messageCount }) {
+  onStart: async function ({ api, event }) {
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    const loadStages = [
+      "[ █░░░░░░░░░░░░░░ ]",
+      "[ █████░░░░░░░░░░ ]",
+      "[ █████████░░░░░░ ]",
+      "[ █████████████░░ ]",
+      "[ ███████████████ ]"
+    ];
+
     try {
-      const steps = [
-        { percent: 25, fill: 3 },
-        { percent: 50, fill: 5 },
-        { percent: 70, fill: 7 },
-        { percent: 80, fill: 8 },
-        { percent: 95, fill: 9 },
-        { percent: 100, fill: 10 }
-      ];
+      const loading = await api.sendMessage("🪐 𝐋𝐨𝐚𝐝𝐢𝐧𝐠 𝐁𝐨𝐭 𝐔𝐩𝐭𝐢𝐦𝐞...\n" + loadStages[0], event.threadID);
 
-      const loadingStyle = (fill) => {
-        const filled = "█ ".repeat(fill).trim();
-        const empty = ". ".repeat(10 - fill).trim();
-        return `[ ${filled}${empty ? ' ' + empty : ''} ]`.replace(/\s+/g, ' ').trim();
-      };
-
-      const msg = await api.sendMessage({
-        body: "⏳ Loading [ . . . . . . . . . . ] 0%",
-        replyToMessageID: event.messageID
-      }, event.threadID);
-
-      for (let i = 0; i < steps.length; i++) {
-        const { percent, fill } = steps[i];
-        await new Promise(res => setTimeout(res, 300));
-        await api.editMessage(`⏳ Loading ${loadingStyle(fill)} ${percent}%`, msg.messageID, event.threadID);
+      for (let i = 1; i < loadStages.length; i++) {
+        await delay(250);
+        await api.editMessage(`🪐 𝐋𝐨𝐚𝐝𝐢𝐧𝐠 𝐁𝐨𝐭 𝐔𝐩𝐭𝐢𝐦𝐞...\n${loadStages[i]}`, loading.messageID, event.threadID);
       }
 
-      const allUsers = await usersData.getAll();
-      const allThreads = await threadsData.getAll();
-      const activeThreads = allThreads.filter(t => t.messageCount > 0).length;
-      const totalMessages = messageCount || 0;
-
       const memoryUsage = (process.memoryUsage().rss / 1024 / 1024).toFixed(2);
-      const platform = os.platform();
-      const arch = os.arch();
-      const nodeVersion = process.version;
-      const cpus = os.cpus();
-      const cpuModel = cpus[0].model;
-      const cpuCores = cpus.length;
-
       const uptime = process.uptime();
-      const days = Math.floor(uptime / (60 * 60 * 24));
-      const hours = Math.floor((uptime % (60 * 60 * 24)) / 3600);
+      const days = Math.floor(uptime / 86400);
+      const hours = Math.floor((uptime % 86400) / 3600);
       const minutes = Math.floor((uptime % 3600) / 60);
       const seconds = Math.floor(uptime % 60);
       const uptimeFormatted = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
-      const startTime = new Date(Date.now() - uptime * 1000).toLocaleString("bn-BD", {
+      const now = new Date().toLocaleString("en-US", {
         timeZone: "Asia/Dhaka",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
         hour12: true
       });
+      const [date, time] = now.split(", ");
 
-      const finalStats = `
-╭────────────────╮
-   🪐 UPTIME STATS 🪐
-╰────────────────╯
+      const finalMessage = `
+🪐 𝐁𝐎𝐓 𝐔𝐏𝐓𝐈𝐌𝐄 𝐒𝐓𝐀𝐓𝐒 🪐
 
-🕰️ Uptime: ${uptimeFormatted}
-🗓️ Start Time: ${startTime}
+🕰️ 𝐔𝐩𝐭𝐢𝐦𝐞: ${uptimeFormatted}
+🕓 𝐓𝐢𝐦𝐞 (𝐃𝐡𝐚𝐤𝐚): ${time}
+📆 𝐃𝐚𝐭𝐞: ${date}
 
-👥 Users: ${allUsers.length}
-💬 Threads: ${allThreads.length}
-⚡ Active Threads: ${activeThreads}
-🧾 Messages: ${totalMessages}
+💾 𝐑𝐀𝐌 𝐔𝐬𝐚𝐠𝐞: ${memoryUsage} MB
+🖥️ 𝐎𝐒: ${os.platform()} (${os.arch()})
+🛠️ 𝐍𝐨𝐝𝐞: ${process.version}
+      `.trim();
 
-🖥️ Platform: ${platform} (${arch})
-💾 Memory: ${memoryUsage} MB
-⚙️ CPU: ${cpuModel} (${cpuCores} cores)
-🛠️ Node: ${nodeVersion}
-      `;
+      await delay(300);
+      await api.editMessage(finalMessage, loading.messageID, event.threadID);
 
-      await api.editMessage(finalStats.trim(), msg.messageID, event.threadID);
     } catch (err) {
-      console.error(err);
-      api.sendMessage(`⚠️ ত্রুটি ঘটেছে: ${err.message}`, event.threadID);
+      console.error("Uptime error:", err);
+      api.sendMessage("❌ Ping problem, wait a moment and try again.", event.threadID);
     }
   }
 };
