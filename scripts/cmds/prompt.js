@@ -11,9 +11,9 @@ function cleanPrompt(text) {
 module.exports = {
   config: {
     name: "prompt",
-    aliases: ["p","pro"],
+    aliases: ["p"],
     version: "2.0",
-    author: "SiAM x Calyx",
+    author: "Amit Max ⚡",
     countDown: 5,
     role: 0,
     shortDescription: "Generate powerful prompts from text or image",
