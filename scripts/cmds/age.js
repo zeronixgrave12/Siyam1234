@@ -1,55 +1,63 @@
-const axios = require("axios");
+/**
+ * Script Name: age.js
+ * মূল লেখক: Mahmud X
+ * ক্ষ্যাপা সংস্করণে রিমিক্স করেছে: Amit Max ⚡
+ * 
+ * বিবরণ: জন্ম তারিখ দিয়ে তোর বয়স কত হইছে তা হিসাব করে, সাথে ক্ষ্যাপামোও বোনাসে!
+ */
 
-const BASE_API = "https://mahmud-age.onrender.com";
+const axios = require("axios");
 
 module.exports = {
   config: {
     name: "age",
-    version: "1.3",
-    author: "Mahmud x Amit Max ⚡",
+    aliases: [],
+    version: "1.0",
+    author: "Mahmud X & Amit Max ⚡",
+    countDown: 5,
+    role: 0,
+    shortDescription: {
+      en: "তোর বয়স কতো হইছে বুঝিস?"
+    },
+    longDescription: {
+      en: "তোদের জন্মদিন গুনে গুনে বলবো কতো পুরান হইছস!"
+    },
     category: "utility",
     guide: {
-      en: "Usage: age <YYYY-MM-DD> [font1|font2|font3]\nExample: age 2000-04-18 font2"
+      en: "{pn} [YYYY-MM-DD] — জন্ম তারিখটা দিবি, না হলে ঝাড় খাবি!"
     }
   },
 
-  onStart: async function ({ args, message }) {
-    if (!args[0]) {
-      return message.reply("❗ ভাই, জন্মতারিখ না দিলে আমি কেমনে হিসাব করবো? দাও এইভাবে: `YYYY-MM-DD`");
+  onStart: async function ({ api, event, args }) {
+    const input = args.join(" ");
+
+    if (!input) {
+      return api.sendMessage("ওই লুচ্চা! আগে তোর জন্ম তারিখ দে — YYYY-MM-DD ফরম্যাটে, বুঝলি?!", event.threadID, event.messageID);
     }
-
-    const inputDate = args[0];
-    const validFormat = /^\d{4}-\d{2}-\d{2}$/;
-
-    if (!validFormat.test(inputDate)) {
-      return message.reply("⚠️ ভাই, ফরম্যাট ভুল দিছো! সোজা করে দাও: `YYYY-MM-DD`");
-    }
-
-    const fontStyle = args[1] || "font3";
 
     try {
-      const response = await axios.get(`${BASE_API}/age/${fontStyle}/${inputDate}`);
+      const response = await axios.get(`https://api.popcat.xyz/age?dob=${input}`);
       const data = response.data;
 
-      if (data.error) {
-        return message.reply(`❌ ওফ! সমস্যা হইছে: ${data.error}`);
-      }
+      const message = 
+`📅 জন্মদিনের খতিয়ান (Mahmud X & Amit Max ⚡ রে ধন্যবাদ দিস!)
 
-      let extraFacts = `
-🧮 Extra Facts:
-- Days: ${data.days}
-- Weeks: ${data.weeks}
-- Months: ${data.months}
-- Hours: ${data.hours}
-- Minutes: ${data.minutes}
-- Seconds: ${data.seconds}
-`;
+🔞 তুই হইছসঃ ${data.age} বছর ধরের ভীমরতি
+📆 জন্ম তারিখঃ ${data.date}
 
-      return message.reply(`✅ হিসাব অনুযায়ী:\n${data.message}\n${extraFacts}`);
+⏰ জন্মের পর তুই বুড়া হইছস এইটুকুঃ
+    • দিন পার হইছে: ${data.days_old} টা দিন!
+    • সপ্তাহ হইছে: ${data.weeks_old} টা সপ্তাহ
+    • মাস গুনছস: ${data.months_old} টা মাস
+    • ঘণ্টা গুইলছস: ${data.hours_old} ঘণ্টা
+    • মিনিট পার হইছে: ${data.minutes_old} মিনিট
 
+সব হিসাব দিলাম, এখন তুই চাইলে কাইন্দা নিস!`;
+
+      return api.sendMessage(message, event.threadID, event.messageID);
     } catch (error) {
-      console.error("Age API error:", error.message);
-      return message.reply("❌ ঐ দ্যাখো! সার্ভার কই যায় নাই। একটু পর আবার চেষ্টা করো ভাই।");
+      console.error("API ফাটায় দিছে:", error);
+      return api.sendMessage("ধুর বেটা, ঠিকমতো জন্ম তারিখ লিখ না! আবার আসিস!", event.threadID, event.messageID);
     }
   }
 };
