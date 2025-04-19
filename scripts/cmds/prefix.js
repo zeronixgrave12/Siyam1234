@@ -1,7 +1,7 @@
 module.exports = {
   config: {
     name: "prefix",
-    aliases: ["prefix2"],
+    aliases: [],
     author: "Amit Max ⚡",
     role: 0,
     shortDescription: "Show bot prefix",
