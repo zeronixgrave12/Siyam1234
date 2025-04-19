@@ -11,6 +11,17 @@ module.exports = {
   },
 
   onStart: async function ({ api, event }) {
+    this.sendPrefixMessage(api, event);
+  },
+
+  onChat: async function ({ event, api }) {
+    const msg = event.body?.trim().toLowerCase();
+    if (msg === "prefix") {
+      this.sendPrefixMessage(api, event);
+    }
+  },
+
+  sendPrefixMessage: async function (api, event) {
     const { threadID, senderID } = event;
 
     let userName = "User";
@@ -55,6 +66,4 @@ module.exports = {
       }
     });
   }
-
-  // onChat অংশ বাদ দেওয়া হয়েছে যাতে ডাবল রেসপন্স না আসে
 };
