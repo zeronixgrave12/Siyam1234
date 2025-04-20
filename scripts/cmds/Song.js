@@ -48,7 +48,7 @@ function getVideoID(url) {
 
 const config = {
     name: "song",
-    author: "Chat⚡GPT | D1PT0",
+    author: "Amit Max ⚡ | D1PT0",
     version: "1.2.0",
     role: 0,
     hasPermssion: 0,
