@@ -1,69 +1,100 @@
+const fs = require("fs-extra");
+const moment = require("moment-timezone");
+const { utils } = global;
+
 module.exports = {
   config: {
     name: "prefix",
-    aliases: [],
+    version: "1.5",
     author: "Amit Max ⚡",
+    countDown: 5,
     role: 0,
-    shortDescription: "Show bot prefix",
-    longDescription: "Displays the current prefix and group prefix of the bot",
-    category: "utility",
-    guide: "{pn}"
-  },
-
-  onStart: async function ({ api, event }) {
-    this.sendPrefixMessage(api, event);
-  },
-
-  onChat: async function ({ event, api }) {
-    const msg = event.body?.trim().toLowerCase();
-    if (msg === "prefix") {
-      this.sendPrefixMessage(api, event);
+    description: "Change or show bot prefix",
+    category: "config",
+    guide: {
+      en: "prefix: show your system & group prefix\n{pn} <new prefix>: change prefix\n{pn} <new prefix> -g: global\n{pn} reset"
     }
   },
 
-  sendPrefixMessage: async function (api, event) {
+  langs: {
+    en: {
+      reset: "Your prefix has been reset to default: %1",
+      onlyAdmin: "Only admin can change prefix of system bot",
+      confirmGlobal: "React to this message to confirm global prefix change.",
+      confirmThisThread: "React to this message to confirm group prefix change.",
+      successGlobal: "✅ Global prefix changed to: %1",
+      successThisThread: "✅ Group prefix changed to: %1",
+      myPrefix: `┏━━━━━━━━━━━━━━━┓
+✨ PREFIX SETTINGS
+┗━━━━━━━━━━━━━━━┛
+👤 User: %1
+👑 Owner: Amit Max ⚡
+🔷 Global: %2
+🔶 Group: %3
+⏰ Time: %4
+⌛ Auto Delete in 20 seconds...`
+    }
+  },
+
+  onStart: async function ({ message, role, args, commandName, event, threadsData, usersData, getLang }) {
     const { threadID, senderID } = event;
 
-    let userName = "User";
-    try {
-      const info = await api.getUserInfo(senderID);
-      userName = info[senderID]?.name || "User";
-    } catch (e) {}
+    if (!args[0]) return message.SyntaxError();
 
-    const threadData = global.data?.threadData?.get(threadID);
-    const prefix = threadData?.prefix || global.config?.prefix || '.';
+    if (args[0] === 'reset') {
+      await threadsData.set(threadID, null, "data.prefix");
+      return message.reply(getLang("reset", global.GoatBot.config.prefix));
+    }
 
-    const time = new Date().toLocaleTimeString('en-US', {
-      hour12: true,
-      timeZone: 'Asia/Dhaka'
-    });
+    const newPrefix = args[0];
+    const formSet = {
+      commandName,
+      author: senderID,
+      newPrefix,
+      setGlobal: args[1] === "-g"
+    };
 
-    const msg = `
-┏━━━━━━━━━━━━━━━━━━┓
-┃   ✨ 𝗣𝗥𝗘𝗙𝗜𝗫 𝗦𝗘𝗧𝗧𝗜𝗡𝗚𝗦
-┣━━━━━━━━━━━━━━━━━━┫
-┃ 👤 𝗨𝘀𝗲𝗿: @${userName}
-┃ 👑 𝗢𝘄𝗻𝗲𝗿: Amit Max ⚡
-┃ 🔹 𝗚𝗹𝗼𝗯𝗮𝗹: ${global.config?.prefix || '.'}
-┃ 🔸 𝗚𝗿𝗼𝘂𝗽: ${prefix}
-┃ ⏰ 𝗧𝗶𝗺𝗲: ${time}
-┗━━━━━━━━━━━━━━━━━━┛
+    if (formSet.setGlobal && role < 2)
+      return message.reply(getLang("onlyAdmin"));
 
-⏳ 𝗔𝘂𝘁𝗼 𝗗𝗲𝗹𝗲𝘁𝗲 𝗶𝗻 𝟮𝟬 𝘀𝗲𝗰𝗼𝗻𝗱𝘀...
-`;
-
-    api.sendMessage({
-      body: msg,
-      mentions: [{
-        id: senderID,
-        tag: `@${userName}`
-      }]
-    }, threadID, (err, res) => {
-      if (!err) {
-        setTimeout(() => {
-          api.unsendMessage(res.messageID);
-        }, 20000);
+    return message.reply(
+      formSet.setGlobal ? getLang("confirmGlobal") : getLang("confirmThisThread"),
+      (err, info) => {
+        formSet.messageID = info.messageID;
+        global.GoatBot.onReaction.set(info.messageID, formSet);
       }
+    );
+  },
+
+  onReaction: async function ({ message, threadsData, event, Reaction, getLang }) {
+    const { author, newPrefix, setGlobal } = Reaction;
+    if (event.userID !== author) return;
+
+    if (setGlobal) {
+      global.GoatBot.config.prefix = newPrefix;
+      fs.writeFileSync(global.client.dirConfig, JSON.stringify(global.GoatBot.config, null, 2));
+      return message.reply(getLang("successGlobal", newPrefix));
+    } else {
+      await threadsData.set(event.threadID, newPrefix, "data.prefix");
+      return message.reply(getLang("successThisThread", newPrefix));
+    }
+  },
+
+  onChat: async function ({ event, message, usersData, getLang }) {
+    const { threadID, senderID, body } = event;
+    if (!body || body.toLowerCase() !== "prefix") return;
+
+    const globalPrefix = global.GoatBot.config.prefix;
+    const groupPrefix = utils.getPrefix(threadID);
+    const time = moment.tz("Asia/Dhaka").format("hh:mm:ss A");
+    const userName = (await usersData.getName(senderID)) || "User";
+
+    const msg = getLang("myPrefix", userName, globalPrefix, groupPrefix, time);
+
+    return message.reply({ body: msg, mentions: [{ tag: userName, id: senderID }] }, (err, info) => {
+      setTimeout(() => {
+        message.unsend(info.messageID);
+      }, 20_000);
     });
   }
 };
