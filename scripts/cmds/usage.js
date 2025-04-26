@@ -1,12 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-const { createCanvas } = require('canvas');
-
+const { createCanvas, loadImage } = require('canvas');
 
 let commandUsage = [];
 const prefixes = {};
 const unlistedCommands = ["eval", "usage", "restart", "spamkick", "cmd"];
-const maxBarsToShow = 5; // change it value to increased the number of bars
+const maxBarsToShow = 30; // টপ ৩০ কমান্ড দেখাবে
+const backgroundImageUrl = 'https://i.imgur.com/KnHJ9hw.jpeg'; // তোমার ব্যাকগ্রাউন্ড
 
 try {
   commandUsage = JSON.parse(fs.readFileSync('usage.json', 'utf8'));
@@ -17,11 +17,11 @@ try {
 module.exports = {
   config: {
     name: "usage",
-    version: "2.0",
-    author: "Vex_Kshitiz -Jsus",
+    version: "2.2",
+    author: "Amit Max ⚡",
     role: 0,
     shortDescription: { en: "Usage" },
-    longDescription: { en: "Usage" },
+    longDescription: { en: "View bot command usage statistics" },
     category: "admin",
     guide: { en: "{pn}" },
   },
@@ -31,86 +31,88 @@ module.exports = {
     try {
       if (commandUsage.length === 0) return message.reply("No command usage data available.");
 
-      
       commandUsage.sort((a, b) => b.usage - a.usage);
-
-    
       const topCommands = commandUsage.slice(0, maxBarsToShow);
-      const totalCommands = commandUsage.length;
+      const totalBars = topCommands.length;
 
-      
-      const canvasWidth = totalCommands <= maxBarsToShow ? totalCommands * 120 : maxBarsToShow * 120;
-      const canvasHeight = 400;
+      const barWidth = 50;
+      const spacing = 25;
+      const canvasWidth = (barWidth + spacing) * totalBars + 100;
+      const canvasHeight = 500;
+
       const canvas = createCanvas(canvasWidth, canvasHeight);
       const ctx = canvas.getContext('2d');
 
-      
-      const gradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
-      gradient.addColorStop(0, '#f6f8fa');
-      gradient.addColorStop(1, '#dfe6e9');
-      ctx.fillStyle = gradient;
+      // Background Image Load
+      const background = await loadImage(backgroundImageUrl);
+      ctx.drawImage(background, 0, 0, canvasWidth, canvasHeight);
+
+      // Dark overlay for better visibility
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
       ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-     
-      ctx.fillStyle = '#000'; 
+      // Top Title
+      ctx.fillStyle = '#2c3e50';
+      ctx.font = 'bold 28px Arial';
       ctx.textAlign = 'center';
+      ctx.fillText("Amit Max Bot Usage Cmd (Top 30)", canvasWidth / 2, 40);
+
+      // Y Axis Label
+      ctx.save();
+      ctx.translate(20, canvasHeight / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillStyle = '#000';
       ctx.font = 'bold 14px Arial';
+      ctx.fillText("Usage Count", 0, 0);
+      ctx.restore();
 
-     
-      ctx.fillText("Commands", canvasWidth / 2 - 30, canvasHeight - 5);
+      // X Axis Label
+      ctx.fillStyle = '#000';
+      ctx.font = 'bold 14px Arial';
+      ctx.fillText("Commands", canvasWidth / 2, canvasHeight - 10);
 
-    
-      ctx.save(); 
-      ctx.rotate(-Math.PI / 2); 
-      ctx.fillText("Usage Count", -canvasHeight / 2, 20);
-      ctx.restore(); 
-
-     
-      const numGridLines = 5; 
+      // Grid Lines
+      const numGridLines = 5;
       const gridSpacing = (canvasHeight - 100) / numGridLines;
-
-      ctx.strokeStyle = '#000'; 
+      ctx.strokeStyle = '#aaa';
       ctx.lineWidth = 1;
-
       for (let i = 1; i <= numGridLines; i++) {
         const y = canvasHeight - 50 - (gridSpacing * i);
         ctx.beginPath();
-        
         ctx.moveTo(40, y);
-        ctx.lineTo(canvasWidth, y);
+        ctx.lineTo(canvasWidth - 20, y);
         ctx.stroke();
       }
 
-      
-      const barWidth = 50;
-      const spacing = 20;
-      let xPos = 50;
+      // Bars
+      let xPos = 70;
       const maxUsage = Math.max(...topCommands.map(cmd => cmd.usage));
+
       for (const cmd of topCommands) {
-        const barHeight = (cmd.usage / maxUsage) * (canvasHeight - 100);
+        const barHeight = (cmd.usage / maxUsage) * (canvasHeight - 150);
+
         const hue = Math.floor(Math.random() * 360);
-        const gradientBar = ctx.createLinearGradient(xPos, canvasHeight - barHeight - 50, xPos + barWidth, canvasHeight);
-        gradientBar.addColorStop(0, `hsl(${hue}, 70%, 50%)`);
-        gradientBar.addColorStop(1, `hsl(${hue}, 50%, 70%)`);
-        ctx.fillStyle = gradientBar;
-        ctx.fillRect(xPos, canvasHeight - barHeight - 50, barWidth, barHeight);
-        ctx.strokeStyle = '#34495e';
+        const barGradient = ctx.createLinearGradient(xPos, canvasHeight - barHeight - 60, xPos + barWidth, canvasHeight);
+        barGradient.addColorStop(0, `hsl(${hue}, 70%, 50%)`);
+        barGradient.addColorStop(1, `hsl(${hue}, 50%, 70%)`);
+        ctx.fillStyle = barGradient;
+
+        ctx.fillRect(xPos, canvasHeight - barHeight - 60, barWidth, barHeight);
+
+        ctx.strokeStyle = '#2c3e50';
         ctx.lineWidth = 2;
-        ctx.strokeRect(xPos, canvasHeight - barHeight - 50, barWidth, barHeight);
+        ctx.strokeRect(xPos, canvasHeight - barHeight - 60, barWidth, barHeight);
+
         ctx.fillStyle = '#000';
-        ctx.textAlign = 'center';
         ctx.font = 'bold 12px Arial';
-      
-        ctx.fillText(cmd.name, xPos + (barWidth / 2), canvasHeight - 30);
-      
-        ctx.fillText(cmd.usage, xPos + (barWidth / 2), canvasHeight - barHeight - 60);
+        ctx.textAlign = 'center';
+        ctx.fillText(cmd.name, xPos + barWidth / 2, canvasHeight - 30);
+        ctx.fillText(cmd.usage, xPos + barWidth / 2, canvasHeight - barHeight - 70);
+
         xPos += barWidth + spacing;
       }
 
-    
       const buffer = canvas.toBuffer('image/png');
-
-     
       const cacheFolderPath = path.join(__dirname, "cache");
       if (!fs.existsSync(cacheFolderPath)) {
         fs.mkdirSync(cacheFolderPath);
@@ -118,7 +120,6 @@ module.exports = {
       const cachedImagePath = path.join(cacheFolderPath, 'usage_chart.png');
       fs.writeFileSync(cachedImagePath, buffer);
 
-    
       message.reply({
         body: "",
         attachment: fs.createReadStream(cachedImagePath),
@@ -157,9 +158,9 @@ module.exports = {
 function saveCommandUsage() {
   fs.writeFile('usage.json', JSON.stringify(commandUsage, null, 2), err => {
     if (err) {
-      console.error('Error saving command:', err);
+      console.error('Error saving command usage:', err);
     } else {
-      console.log('saved successfully.');
+      console.log('Command usage saved successfully.');
     }
   });
 }
