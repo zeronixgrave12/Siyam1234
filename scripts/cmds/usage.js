@@ -6,7 +6,7 @@ let commandUsage = [];
 const prefixes = {};
 const unlistedCommands = ["eval", "usage", "restart", "spamkick", "cmd"];
 const maxBarsToShow = 30; // টপ ৩০ কমান্ড দেখাবে
-const backgroundImageUrl = 'https://i.imgur.com/KnHJ9hw.jpeg'; // তোমার ব্যাকগ্রাউন্ড
+const backgroundImageUrl = 'https://i.imgur.com/p5J3nWC.jpeg'; // তোমার ব্যাকগ্রাউন্ড
 
 try {
   commandUsage = JSON.parse(fs.readFileSync('usage.json', 'utf8'));
