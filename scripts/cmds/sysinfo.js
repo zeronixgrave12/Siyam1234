@@ -1,4 +1,4 @@
-.cmd install sysinfo.js const os = require('os');
+const os = require('os');
 const axios = require('axios');
 
 module.exports = {
