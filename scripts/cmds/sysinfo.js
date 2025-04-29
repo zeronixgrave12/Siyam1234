@@ -1,107 +1,103 @@
-// 📦 Project: System Info Pro
-// ✍️ Credit: Amit Max ⚡
-// 📜 Rule No: Only bot owner (role 0) can run
-// 🎯 Role No: 0
-
-const os = require('os');
+.cmd install sysinfo.js const os = require('os');
 const axios = require('axios');
 
-module.exports.config = {
-  name: "sysinfo",
-  version: "1.2.0",
-  role: 0,
-  credits: "Amit Max ⚡",
-  description: "Display bot & system stats"
-};
-
-module.exports.onStart = async function({ api, event }) {
-  const { threadID, messageID } = event;
-
-  // helper: seconds ➔ "Xd Xh Xm Xs"
-  function formatTime(sec) {
-    const d = Math.floor(sec / 86400); sec %= 86400;
-    const h = Math.floor(sec / 3600); sec %= 3600;
-    const m = Math.floor(sec / 60); sec %= 60;
-    const s = Math.floor(sec);
-    return `${d}d ${h}h ${m}m ${s}s`;
-  }
-
-  try {
-    // 1) show loading
-    const loading = await api.sendMessage("🔄 Loading System Info...", threadID);
-
-    // 2) gather uptimes
-    const systemUptime = formatTime(os.uptime());
-    const botUptime = formatTime(process.uptime());
-
-    // 3) CPU & load
-    const cpu = os.cpus()[0].model;
-    const cores = os.cpus().length;
-    const loadAvg = os.loadavg().map(v => v.toFixed(2)).join(", ");
-
-    // 4) fetch group threads
-    let threads = [];
-    try {
-      threads = await api.getThreadList(200, null, ["INBOX"]);
-    } catch (e) {
-      console.warn("Could not fetch thread list:", e);
+module.exports = {
+  config: {
+    name: "sysinfo",
+    version: "1.7",
+    author: "Amit Max ⚡",
+    shortDescription: {
+      en: "Show system & bot statistics"
+    },
+    longDescription: {
+      en: "Displays bot uptime, host info, CPU, memory, total groups and users"
+    },
+    category: "Utility",
+    guide: {
+      en: "{pn}"
     }
-    const groupThreads = threads.filter(t => t.isGroup);
-    const totalGroups = groupThreads.length;
+  },
 
-    // 5) count unique users across groups
-    const users = new Set();
-    for (const g of groupThreads) {
+  onStart: async function ({ api, event }) {
+    try {
+      // 1) Bot uptime
+      const botUptime = formatTime(process.uptime());
+
+      // 2) Host & OS Info
+      const hostname = os.hostname();
+      const platform = os.platform();
+      const cpu = os.cpus()[0].model;
+      const cores = os.cpus().length;
+      const loadAvg = os.loadavg().map(v => v.toFixed(2)).join(", ");
+      const totalMem = (os.totalmem() / 1024 ** 3).toFixed(2);
+      const freeMem = (os.freemem() / 1024 ** 3).toFixed(2);
+      const usedMem = (totalMem - freeMem).toFixed(2);
+      const memUsage = ((usedMem / totalMem) * 100).toFixed(1);
+
+      // 3) Fetch all threads and filter groups
+      const threads = await api.getThreadList(200, null, ['INBOX']);
+      const groupThreads = threads.filter(t => t.isGroup || t.threadType === 'GROUP');
+      const totalGroups = groupThreads.length;
+
+      // 4) For each group, fetch participant list and build unique user set
+      const infos = await Promise.all(
+        groupThreads.map(g => api.getThreadInfo(g.threadID))
+      );
+      const userSet = new Set();
+      infos.forEach(info => {
+        info.participantIDs.forEach(id => userSet.add(id));
+      });
+      const totalUsers = userSet.size;
+
+      // 5) External IP
+      let ip = "Could not fetch IP";
       try {
-        const info = await api.getThreadInfo(g.threadID);
-        info.participantIDs.forEach(id => users.add(id));
+        const res = await axios.get('https://api.ipify.org?format=json');
+        ip = res.data.ip;
       } catch {}
+
+      // 6) Node.js version
+      const nodeVersion = process.version;
+
+      // 7) Send final message
+      api.sendMessage(
+        `-- 𝗦𝘆𝘀𝘁𝗲𝗺 & 𝗕𝗼𝘁 𝗜𝗻𝗳𝗼
+
+🕒 𝗕𝗼𝘁 𝗨𝗽𝘁𝗶𝗺𝗲: ${botUptime}
+
+- 𝗛𝗼𝘀𝘁: ${hostname}
+- 𝗢𝗦: ${platform}
+- 𝗖𝗣𝗨: ${cpu} (${cores} Cores)
+- 𝗟𝗼𝗮𝗱 𝗔𝘃𝗲𝗿𝗮𝗴𝗲: ${loadAvg}
+
+💾 𝗠𝗲𝗺𝗼𝗿𝘆:
+- Total: ${totalMem} GB
+- Used: ${usedMem} GB (${memUsage}%)
+- Free: ${freeMem} GB
+
+🌐 𝗜𝗣: ${ip}
+🔧 𝗡𝗼𝗱𝗲.𝗝𝗦 𝗩𝗲𝗿𝘀𝗶𝗼𝗻: ${nodeVersion}
+
+📊 𝗕𝗼𝘁 𝗦𝘁𝗮𝘁𝘀:
+- 𝗧𝗼𝘁𝗮𝗹 𝗚𝗿𝗼𝘂𝗽𝘀: ${totalGroups}
+- 𝗧𝗼𝘁𝗮𝗹 𝗨𝘀𝗲𝗿𝘀: ${totalUsers}`, 
+        event.threadID
+      );
+
+    } catch (err) {
+      console.error(err);
+      api.sendMessage("❌ System Info loading failed.", event.threadID);
     }
-    const totalUsers = users.size;
-
-    // 6) current group info
-    let currentName = "Unknown", currentCount = 0;
-    try {
-      const cur = await api.getThreadInfo(threadID);
-      currentName = cur.name;
-      currentCount = cur.participantIDs.length;
-    } catch {}
-
-    // 7) IP & Node
-    let ip = "Unavailable";
-    try {
-      const res = await axios.get("https://api.ipify.org?format=json");
-      ip = res.data.ip;
-    } catch {}
-    const nodeV = process.version;
-    const platform = os.platform();
-
-    // 8) build final message
-    const msg = `✨ 𝗕𝗼𝘁 & 𝗦𝗶𝘀𝘁𝗲𝗺 𝗦𝘁𝗮𝘁𝘀
-
-⏳ System Uptime: ${systemUptime}
-🤖 Bot Uptime: ${botUptime}
-
-📊 Bot Stats:
-- Total Groups: ${totalGroups}
-- Total Users: ${totalUsers}
-
-💬 Current Group:
-- Name: ${currentName}
-- Members: ${currentCount}
-
-🛠 System Details:
-- Platform: ${platform}
-- CPU: ${cpu} (${cores} Cores)
-- Load Avg: ${loadAvg}
-- Node.js: ${nodeV}
-- IP: ${ip}`;
-
-    // 9) edit loading
-    await api.editMessage(msg, loading.messageID, threadID);
-  }
-  catch (err) {
-    console.error("sysinfo failed:", err);
-    return api.sendMessage("❌ Could not load system information.", threadID, messageID);
   }
 };
+
+// helper: seconds → "Xd Xh Xm Xs"
+function formatTime(sec) {
+  const d = Math.floor(sec / 86400);
+  sec %= 86400;
+  const h = Math.floor(sec / 3600);
+  sec %= 3600;
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return `${d}d ${h}h ${m}m ${s}s`;
+}
