@@ -2,81 +2,77 @@ const axios = require("axios");
 const fs = require("fs-extra");
 const path = require("path");
 
+const baseApiUrl = async () => {
+    const base = await axios.get(
+        `https://raw.githubusercontent.com/Mostakim0978/D1PT0/refs/heads/main/baseApiUrl.json`,
+    );
+    return base.data.api;
+};
+
 module.exports = {
-  config: {
-    name: "pin",
-    aliases: ["pinterest"],
-    version: "1.0.0",
-    author: "Mahi--",
-    role: 0,
-    countDown: 10,
-    shortDescription: {
-      en: "Search images on Pinterest"
-    },
-    category: "image",
-    guide: {
-      en: "{prefix}pin <search query> -<number of images>"
-    }
-  },
+    config: {
+        name: "pin",
+        aliases: ["pinterest"],
+        version: "1.1",
+        author: "Dipto",
+        countDown: 15,
+        role: 0,
+        shortDescription: "Pinterest Image Search",
+        longDescription: "Pinterest Image Search",
+        category: "download",
+        guide: {
+            en: "{pn} query or {pn} query -5",
+        },
+    },
 
-  onStart: async function ({ api, event, args }) {
-    try {
-      const searchQuery = args.join(" ");
+    onStart: async function ({ api, event, args }) {
+        if (!args[0]) {
+            return api.sendMessage("❌| Please provide a search query.", event.threadID, event.messageID);
+        }
 
-      // Check if the search query is provided
-      if (!searchQuery) {
-        return api.sendMessage(`Please provide a search query. Example: {prefix}pin cats -5`, event.threadID, event.messageID);
-      }
+        // Join all args and check if a hyphen/number exists
+        const input = args.join(" ");
+        const match = input.match(/^(.*?)\s*(?:-(\d+))?$/);
+        const q = match[1].trim();
+        const length = match[2] ? parseInt(match[2]) : 1; // Default to 1 image if no -N provided
 
-      // Split the query and number of images
-      const [query, numImages] = searchQuery.split("-").map(str => str.trim());
-      const numberOfImages = numImages ? parseInt(numImages) : 1; // Default to 1 if no number is provided
+        try {
+            const w = await api.sendMessage("Please wait...", event.threadID);
 
-      // Validate the number of images
-      if (isNaN(numberOfImages)) {
-        return api.sendMessage("Please specify a valid number for the number of images.", event.threadID, event.messageID);
-      }
-      if (numberOfImages <= 0 || numberOfImages > 25) {
-        return api.sendMessage("Please specify a number between 1 and 25.", event.threadID, event.messageID);
-      }
+            const response = await axios.get(
+                `${await baseApiUrl()}/pinterest?search=${encodeURIComponent(q)}&limit=${encodeURIComponent(length)}`
+            );
+            const data = response.data.data;
 
-      // Fetch images from the API
-      const apiUrl = `https://mahi-apis.onrender.com/api/pin?title=${encodeURIComponent(query)}&count=${numberOfImages}`;
-      const response = await axios.get(apiUrl);
-      const imageData = response.data.data;
+            if (!data || data.length === 0) {
+                return api.sendMessage("Empty response or no images found.", event.threadID, event.messageID);
+            }
 
-      // Check if images are available
-      if (!imageData || !Array.isArray(imageData) || imageData.length === 0) {
-        return api.sendMessage(`No images found for "${query}".`, event.threadID, event.messageID);
-      }
+            const diptoo = [];
+            const totalImagesCount = Math.min(data.length, length);
 
-      // Download and prepare images
-      const imgData = [];
-      for (let i = 0; i < imageData.length; i++) {
-        const imageUrl = imageData[i];
-        try {
-          const imgResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-          const imgPath = path.join(__dirname, 'cache', `${i + 1}.jpg`);
-          await fs.outputFile(imgPath, imgResponse.data);
-          imgData.push(fs.createReadStream(imgPath));
-        } catch (error) {
-          console.error(`Error downloading image: ${imageUrl}`, error);
-        }
-      }
+            for (let i = 0; i < totalImagesCount; i++) {
+                const imgUrl = data[i];
+                const imgResponse = await axios.get(imgUrl, {
+                    responseType: "arraybuffer",
+                });
+                const imgPath = path.join(__dirname, "dvassests", `${i + 1}.jpg`);
+                await fs.outputFile(imgPath, imgResponse.data);
+                diptoo.push(fs.createReadStream(imgPath));
+            }
 
-      // Send the images
-      await api.sendMessage({
-        attachment: imgData,
-        body: `Here are ${imageData.length} image(s) for "${query}":`
-      }, event.threadID, event.messageID);
-
-      // Clean up cache
-      for (const imgPath of imgData) {
-        fs.unlinkSync(imgPath.path);
-      }
-    } catch (error) {
-      console.error(error);
-      return api.sendMessage(`An error occurred while processing your request.`, event.threadID, event.messageID);
-    }
-  }
+            await api.unsendMessage(w.messageID);
+            await api.sendMessage(
+                {
+                    body: `✅ | Here's Your Query Based Images\nTotal: ${totalImagesCount}`,
+                    attachment: diptoo,
+                },
+                event.threadID,
+                event.messageID
+            );
+        } catch (error) {
+            console.error(error);
+            await api.sendMessage(`Error: ${error.message}`, event.threadID, event.messageID);
+        }
+    },
 };
