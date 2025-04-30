@@ -1,78 +1,88 @@
 const axios = require("axios");
-const fs = require("fs-extra");
-const path = require("path");
-
-const baseApiUrl = async () => {
-    const base = await axios.get(
-        `https://raw.githubusercontent.com/Mostakim0978/D1PT0/refs/heads/main/baseApiUrl.json`,
-    );
-    return base.data.api;
-};
+const { getStreamFromURL } = global.utils;
 
 module.exports = {
-    config: {
-        name: "pin",
-        aliases: ["pinterest"],
-        version: "1.1",
-        author: "Dipto",
-        countDown: 15,
-        role: 0,
-        shortDescription: "Pinterest Image Search",
-        longDescription: "Pinterest Image Search",
-        category: "download",
-        guide: {
-            en: "{pn} query or {pn} query -5",
-        },
-    },
+  config: {
+    name: "pinterest",
+    aliases: ["Pinterest", "pin"],
+    version: "1.0",
+    author: "SiAM",
+    countDown: 5,
+    role: 0,
+    shortDescription: "Search Pinterest and return images",
+    longDescription: "Fetches images from Pinterest based on a search query",
+    category: "Image",
+    guide: {
+      en: "{pn} your query - [count]\n\n" +
+          "Example: {pn} cute cats - 8\n" +
+          "• Default count is 1 image\n" +
+          "• Maximum is 50 images\n" +
+          "• You can reply to an image message to use that image as context (not implemented here)"
+    }
+  },
 
-    onStart: async function ({ api, event, args }) {
-        if (!args[0]) {
-            return api.sendMessage("❌| Please provide a search query.", event.threadID, event.messageID);
+  onStart: async function({ api, args, message, event }) {
+    try {
+      // determine how many images to fetch
+      let count = 1;  // Default count is 1 image
+      const dashIndex = args.indexOf("-");
+      if (dashIndex !== -1 && args.length > dashIndex + 1) {
+        const n = parseInt(args[dashIndex + 1], 10);
+        if (!isNaN(n)) {
+          count = Math.min(n, 50);  // Maximum count is 50 images
         }
+        args.splice(dashIndex, 2);
+      }
 
-        // Join all args and check if a hyphen/number exists
-        const input = args.join(" ");
-        const match = input.match(/^(.*?)\s*(?:-(\d+))?$/);
-        const q = match[1].trim();
-        const length = match[2] ? parseInt(match[2]) : 1; // Default to 1 image if no -N provided
+      // build query string
+      let query = args.join(" ").trim();
+      if (!query) {
+        return message.reply("Please provide a search query. Example: /Pinterest mountains - 8");
+      }
 
-        try {
-            const w = await api.sendMessage("Please wait...", event.threadID);
+      // Check if query is related to Anime (by checking for anime-related keywords)
+      const animeKeywords = ["naruto", "one piece", "dragon ball", "luffy", "sakura", "anime", "manga", "character"];
+      const isAnimeQuery = animeKeywords.some(keyword => query.toLowerCase().includes(keyword));
 
-            const response = await axios.get(
-                `${await baseApiUrl()}/pinterest?search=${encodeURIComponent(q)}&limit=${encodeURIComponent(length)}`
-            );
-            const data = response.data.data;
+      // If query contains anime keywords, treat it as anime-related search
+      if (isAnimeQuery) {
+        query = `${query} anime`;  // Add 'anime' to the query to focus on anime images
+      }
 
-            if (!data || data.length === 0) {
-                return api.sendMessage("Empty response or no images found.", event.threadID, event.messageID);
-            }
+      // send "processing" feedback
+      const processingMessage = await message.reply("🔍 Fetching images from Pinterest...");
+      message.reaction("⏰", event.messageID);
 
-            const diptoo = [];
-            const totalImagesCount = Math.min(data.length, length);
+      // call the Pinterest API
+      const res = await axios.get(
+        `https://connect-foxapi.onrender.com/pinterest?search=${encodeURIComponent(query)}`
+      );
 
-            for (let i = 0; i < totalImagesCount; i++) {
-                const imgUrl = data[i];
-                const imgResponse = await axios.get(imgUrl, {
-                    responseType: "arraybuffer",
-                });
-                const imgPath = path.join(__dirname, "dvassests", `${i + 1}.jpg`);
-                await fs.outputFile(imgPath, imgResponse.data);
-                diptoo.push(fs.createReadStream(imgPath));
-            }
+      const links = Array.isArray(res.data.links) ? res.data.links : [];
+      const toSend = links.slice(0, count);
 
-            await api.unsendMessage(w.messageID);
-            await api.sendMessage(
-                {
-                    body: `✅ | Here's Your Query Based Images\nTotal: ${totalImagesCount}`,
-                    attachment: diptoo,
-                },
-                event.threadID,
-                event.messageID
-            );
-        } catch (error) {
-            console.error(error);
-            await api.sendMessage(`Error: ${error.message}`, event.threadID, event.messageID);
-        }
-    },
+      if (toSend.length === 0) {
+        await message.reply(`No images found for "${query}".`);
+      } else {
+        // fetch all image streams in parallel
+        const streams = await Promise.all(
+          toSend.map((url) => getStreamFromURL(url))
+        );
+
+        // send as a single message with multiple attachments
+        await message.reply({
+          body: `Here are ${streams.length} images for "${query}":`,
+          attachment: streams
+        });
+      }
+
+      // cleanup and reactions
+      await message.unsend(processingMessage.messageID);
+      await message.reaction("✅", event.messageID);
+
+    } catch (error) {
+      console.error(error);
+      message.reply("Err.\nServer has issue 😾");
+    }
+  }
 };
