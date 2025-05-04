@@ -23,7 +23,7 @@ module.exports.onChat = async ({ api, event, usersData, commandName }) => {
     const timePassed = Date.now() - threadInfo.users[senderID].time;
     const messages = threadInfo.users[senderID].count;
     const timeLimit = 80000;
-    const messageLimit = 14; //Limit of message
+    const messageLimit = 7; //Limit of message
 
     if (messages > messageLimit && timePassed < timeLimit) {
       if(global.GoatBot.config.adminBot.includes(senderID)) return;
