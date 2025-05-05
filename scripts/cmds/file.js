@@ -18,7 +18,7 @@ module.exports = {
   onStart: async function ({ message, args, api, event }) {
     const permission = ["100088513497761"];
     if (!permission.includes(event.senderID)) {
-      return api.sendMessage("খানকির ছেলে আর একবার File চালাস না! তোর গুষ্টি চুদে দিবো 😡", event.threadID, event.messageID);
+      return api.sendMessage("খানকির ছেলে আর একবার File চাইলে না! তোর গুষ্টি চুদে দিবো Without Condom  😡", event.threadID, event.messageID);
     }
 
     const fileName = args[0];
@@ -26,7 +26,7 @@ module.exports = {
       return api.sendMessage("File এর নাম লেখো জান, নইলে চপেটাঘাত করবো 😘", event.threadID, event.messageID);
     }
 
-    const safeFileName = path.basename(fileName); // নিরাপদ ফাইলনাম
+    const safeFileName = path.basename(fileName); 
     const filePath = path.join(__dirname, `${safeFileName}.js`);
     if (!fs.existsSync(filePath)) {
       return api.sendMessage(`এই নামে কোনো File নেই তোমার 🥲: ${safeFileName}.js`, event.threadID, event.messageID);
