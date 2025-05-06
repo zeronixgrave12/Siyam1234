@@ -21,11 +21,11 @@ module.exports.onStart = async ({ event, args, api }) => {
     return api.sendMessage("Please provide a prompt.\nExample: poli1 a dragon in space", event.threadID, event.messageID);
   }
 
-  const prompt = `4k quality, ultra high definition, 1:1 ratio, ${userPrompt}`; // "HD" এর পরিবর্তে "4k quality" ব্যবহার করা হয়েছে
+  const prompt = `4k quality, ultra high definition, 1:1 ratio, ${userPrompt}`;
 
   try {
-    const waitMsg = await api.sendMessage("Generating your image, please wait...", event.threadID);
-    api.setMessageReaction("⏳", event.messageID, () => {}, true);
+    const waitMsg = await api.sendMessage("Generating your image, please wait...⏳", event.threadID);
+    api.setMessageReaction("⏰", event.messageID, () => {}, true);
 
     const response = await axios({
       url: `${apiUrl}?prompt=${encodeURIComponent(prompt)}`,
