@@ -11,7 +11,7 @@ module.exports = {
         role: 0,
         shortDescription: "Generate high-quality Anime images using Niji V4.",
         longDescription: "niji V4",
-        category: "Image",
+        category: "𝗜𝗠𝗔𝗚𝗘 𝗚𝗘𝗡𝗘𝗥𝗔𝗧𝗢𝗥",
         guide: {
             en: "{pn} prompt --ar [aspect_ratio]\n\nExample: {pn} pretty girl --ar 16:9\n[default aspect ratio is 1:1]"
         }
