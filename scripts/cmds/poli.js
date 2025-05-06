@@ -7,7 +7,7 @@ module.exports = {
     role: 0,
     shortDescription: "Generate image from prompt",
     longDescription: "Generate image from text prompt using Pollinations AI",
-    category: "ai",
+    category: "𝗜𝗠𝗔𝗚𝗘 𝗚𝗘𝗡𝗘𝗥𝗔𝗧𝗢𝗥",
     guide: {
       en: "{pn} [prompt]\n\nExample:\n.poli A flying house with balloons"
     }
