@@ -29,7 +29,7 @@ module.exports = {
 			welcomeMessage: "☄️ ᴛʜᴀɴᴋ ʏᴏᴜ ꜰᴏʀ ɪɴᴠɪᴛɪɴɢ ᴍᴇ ᴛᴏ ᴛʜᴇ ɢʀᴏᴜᴘ!\n✨ ʙᴏᴛ ᴘʀᴇꜰɪx: %1\n🦋 ᴛᴏ ᴠɪᴇᴡ ᴛʜᴇ ʟɪꜱᴛ ᴏꜰ ᴄᴏᴍᴍᴀɴᴅ, ᴘʟᴇᴀꜱᴇ ᴇɴᴛᴇʀ: %1help",
 			multiple1: "you",
 			multiple2: "you guys",
-			defaultWelcomeMessage: ` ʜᴇʟʟᴏ, Dear {userName}.\n 🌷ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ {multiple}{boxName}\n 😽ɪ ʜᴏᴘᴇ ʏᴏᴜ ᴡɪʟʟ ꜰᴏʟʟᴏᴡ ᴏᴜʀ ɢʀᴏᴜᴘ ʀᴜʟᴇꜱ ᴘʀᴏᴘᴇʀʟʏ. - ʜᴀᴠᴇ ᴀ ɴɪᴄᴇ {session}  -ꔫ 🌊👀✰`
+			defaultWelcomeMessage: ` ʜᴇʟʟᴏ, Dear {userName}.\n 🌷ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ {multiple} {boxName}\n 😽ɪ ʜᴏᴘᴇ ʏᴏᴜ ᴡɪʟʟ ꜰᴏʟʟᴏᴡ ᴏᴜʀ ɢʀᴏᴜᴘ ʀᴜʟᴇꜱ ᴘʀᴏᴘᴇʀʟʏ. - ʜᴀᴠᴇ ᴀ ɴɪᴄᴇ {session}  -ꔫ 🌊👀✰`
 		}
 	},
 
