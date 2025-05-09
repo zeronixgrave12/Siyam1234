@@ -1,13 +1,14 @@
 const axios = require("axios");
 const fs = require("fs-extra");
 const path = require("path");
-const Jimp = require("jimp");  
+const Jimp = require("jimp");  // Import Jimp for image manipulation
 
 module.exports = {
   config: {
     name: "dj",
+    aliases: [],
     version: "1.0",
-    author: "Amit Max ⚡+ xrotick🥀",//Amit max ⚡ and xrotick🥀 author 
+    author: "Amit Max ⚡",
     countDown: 10,
     role: 0,
     shortDescription: "Generate 4 AI images and combine them into one",
@@ -38,17 +39,17 @@ module.exports = {
 
       const imagePaths = [];
 
-      
+      // Download images
       for (let i = 0; i < results.length; i++) {
         const url = results[i];
-        const filePath = path.join(__dirname, `cache/f9_${event.senderID}_${i}.jpg`);
+        const filePath = path.join(__dirname, `cache/dj_${event.senderID}_${i}.jpg`);
         const response = await axios.get(url, { responseType: "arraybuffer" });
         fs.writeFileSync(filePath, Buffer.from(response.data, "binary"));
         imagePaths.push(filePath);
       }
 
-    
-      const combinedImagePath = path.join(__dirname, `cache/f9_combined_${event.senderID}.jpg`);
+      // Combine images into one 2x2 grid using Jimp
+      const combinedImagePath = path.join(__dirname, `cache/dj_combined_${event.senderID}.jpg`);
       const image1 = await Jimp.read(imagePaths[0]);
       const image2 = await Jimp.read(imagePaths[1]);
       const image3 = await Jimp.read(imagePaths[2]);
@@ -77,7 +78,7 @@ module.exports = {
         if (err) console.error("Send error:", err);
 
         global.GoatBot.onReply.set(info.messageID, {
-          commandName: "f9",
+          commandName: "dj",
           author: event.senderID,
           images: results
         });
@@ -105,12 +106,12 @@ module.exports = {
 
     try {
       const url = Reply.images[index];
-      const tempFile = path.join(__dirname, `cache/f9_select_${event.senderID}.jpg`);
+      const tempFile = path.join(__dirname, `cache/dj_select_${event.senderID}.jpg`);
       const response = await axios.get(url, { responseType: "arraybuffer" });
       fs.writeFileSync(tempFile, Buffer.from(response.data, "binary"));
 
       api.sendMessage({
-        body: `⏳ Here is your selected image (${input})`,
+        body: `✅ Here is your selected image (${input})`,
         attachment: fs.createReadStream(tempFile)
       }, event.threadID, () => {
         fs.existsSync(tempFile) && fs.unlinkSync(tempFile);
