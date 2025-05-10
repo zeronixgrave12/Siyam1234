@@ -5,13 +5,12 @@ const path = require("path");
 const imageStore = {};
 
 module.exports.config = {
-  name: "animix",
-  aliases:["animaginexl"],
+  name: "fla",
   version: "1.4",
   role: 0,
-  author: "xrotick🥀",
+  author: "xrotick🥀 + ChatGPT",
   description: "Generate 4 AI images using FluxUltra and recall them via reply (u1–u4)",
-  category: "imggen",
+  category: "img-gen",
   guide: "{pn} [prompt]\nExample: {pn} futuristic samurai warrior\nReply with u1, u2, u3, or u4 to access each image.",
   countDown: 15
 };
@@ -23,11 +22,11 @@ module.exports.onStart = async ({ event, args, api }) => {
   const messageID = event.messageID;
 
   if (!promptInput) {
-    return api.sendMessage("Please provide a prompt.\nExample: animix a cat riding a skateboard", threadID, messageID);
+    return api.sendMessage("Please provide a prompt.\nExample: fla a cat riding a skateboard", threadID, messageID);
   }
 
-  const prompt =', ${promptInput}`;
-  const waitingMsg = await api.sendMessage("Generating AI images, please wait...", threadID);
+  const prompt = `8k quality, ${promptInput}`;
+  const waitingMsg = await api.sendMessage("Generating 4 AI images, please wait...", threadID);
   api.setMessageReaction("⌛", messageID, () => {}, true);
 
   const imagePaths = [];
@@ -41,7 +40,7 @@ module.exports.onStart = async ({ event, args, api }) => {
     }
 
     api.sendMessage({
-      body: "Here are your AI-generated images.\nReply with `u1`, `u2`, `u3`, or `u4` to access a specific image again.",
+      body: "Here are your 4 AI-generated images (8k quality).\nReply with `u1`, `u2`, `u3`, or `u4` to access a specific image again.",
       attachment: imagePaths.map(p => fs.createReadStream(p))
     }, threadID, (err, info) => {
       if (err || !info?.messageID) {
@@ -58,7 +57,7 @@ module.exports.onStart = async ({ event, args, api }) => {
 
       // Setup reply listener
       global.GoatBot.onReply.set(info.messageID, {
-        commandName: "animix",
+        commandName: "fla",
         messageID: info.messageID,
         author: event.senderID
       });
