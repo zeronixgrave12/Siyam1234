@@ -8,7 +8,7 @@ module.exports.config = {
   name: "fla",
   version: "1.4",
   role: 0,
-  author: "xrotick🥀 + ChatGPT",
+  author: "xrotick🥀",
   description: "Generate 4 AI images using FluxUltra and recall them via reply (u1–u4)",
   category: "img-gen",
   guide: "{pn} [prompt]\nExample: {pn} futuristic samurai warrior\nReply with u1, u2, u3, or u4 to access each image.",
