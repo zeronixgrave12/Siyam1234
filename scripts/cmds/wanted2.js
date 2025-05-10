@@ -24,7 +24,7 @@ module.exports = {
       : Object.keys(event.mentions)[0] || event.senderID;
 
     const avatarURL = await usersData.getAvatarUrl(targetID);
-    const baseURL = "https://i.imgur.com/n3Oc30X.jpeg";
+    const baseURL = "https://i.imgur.com/Yslc5Co.jpeg";
 
     const [baseImage, avatarBuffer] = await Promise.all([
       Canvas.loadImage(baseURL),
@@ -41,11 +41,10 @@ module.exports = {
     const canvas = Canvas.createCanvas(baseImage.width, baseImage.height);
     const ctx = canvas.getContext("2d");
 
-    // Draw base poster
+
     ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
 
-    // Draw avatar image with adjusted position and size
-    ctx.drawImage(avatarImage, 52, 149, 382, 300);  // Adjust size/position as needed
+    ctx.drawImage(avatarImage, 52, 149, 382, 300); 
 
     const path = `${__dirname}/tmp/wanted_${targetID}.png`;
     fs.writeFileSync(path, canvas.toBuffer());
