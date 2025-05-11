@@ -1,4 +1,4 @@
-.cmd install hug.js const fs = require("fs");
+const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
 const { loadImage, createCanvas } = require("canvas");
