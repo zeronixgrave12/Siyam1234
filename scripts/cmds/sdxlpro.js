@@ -20,10 +20,10 @@ module.exports.onStart = async ({ event, args, api }) => {
   const promptInput = args.join(" ");
 
   if (!promptInput) {
-    return api.sendMessage("Please provide a prompt.\nExample: sdxl a dragon in space", event.threadID, event.messageID);
+    return api.sendMessage("Please provide a prompt.\nExample: sdxlpro a dragon in space", event.threadID, event.messageID);
   }
 
-  const basePrompt = `8k quality, ${promptInput}`;
+  const basePrompt = `, ${promptInput}`;
   const variants = [
     `8k ultra realistic, ${basePrompt}, variation 1`,
     `4k depth of field, ${basePrompt}, variation 2`,
@@ -55,7 +55,7 @@ module.exports.onStart = async ({ event, args, api }) => {
       imagePaths.push(imgPath);
     }
 
-    // Create collage from 4 images (2x2 grid)
+
     const collagePath = path.join(__dirname, "cache", `collage_${Date.now()}.png`);
     const imageBuffers = await Promise.all(imagePaths.map(p => sharp(p).resize(512, 512).toBuffer()));
 
@@ -77,7 +77,7 @@ module.exports.onStart = async ({ event, args, api }) => {
       .toFile(collagePath);
 
     api.sendMessage({
-      body: "Here is your collage with 4 image variants (8k quality).\n\nReply with `u1`, `u2`, `u3`, or `u4` to get a specific variant.",
+      body: "Here Is Your SDXLPRO.\n\nReply with U1,U2,U3,Ro, U4`",
       attachment: fs.createReadStream(collagePath)
     }, event.threadID, (err, info) => {
       if (!err) {
