@@ -8,7 +8,7 @@ module.exports = {
 		version: "2.0",
 		author: "Amit Max ⚡",  // তোমার নাম
 		countDown: 5,
-		role: 0,
+		role: 2,
 		shortDescription: "Join the group that bot is in",
 		longDescription: "",
 		category: "owner",
