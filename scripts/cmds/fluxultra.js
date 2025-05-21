@@ -6,9 +6,9 @@ module.exports.config = {
   name: "fluxultra",
   version: "1.0",
   role: 0,
-  author: "Amit Max ⚡",
+  author: "xrotick🥀",
   description: "Generate AI image using FluxUltra",
-  category: "𝗜𝗠𝗔𝗚𝗘 𝗚𝗘𝗡𝗘𝗥𝗔𝗧𝗢𝗥",
+  category: "img-gen",
   guide: "{pn} [prompt]\nExample: {pn} a cute dog with sunglasses",
   countDown: 15,
 };
@@ -21,11 +21,11 @@ module.exports.onStart = async ({ event, args, api }) => {
     return api.sendMessage("Please provide a prompt.\nExample: fluxultra a dragon in space", event.threadID, event.messageID);
   }
 
-  const prompt = `Amit Max ⚡, ${userPrompt}`; 
+  const prompt = `8k quality, ${userPrompt}`; // Add "8k quality" before user prompt
 
   try {
-    const waitMsg = await api.sendMessage("Generating your image, please wait...⏳", event.threadID);
-    api.setMessageReaction("⏰", event.messageID, () => {}, true);
+    const waitMsg = await api.sendMessage("Generating your image, please wait...", event.threadID);
+    api.setMessageReaction("⌛", event.messageID, () => {}, true);
 
     const response = await axios({
       url: `${apiUrl}?prompt=${encodeURIComponent(prompt)}`,
@@ -40,7 +40,7 @@ module.exports.onStart = async ({ event, args, api }) => {
 
     writer.on("finish", () => {
       api.sendMessage({
-        body: `Here is your AI-generated image for: "${userPrompt}" (8k quality)`,
+        body: `Here is your AI-generated image for you (8k quality)`,
         attachment: fs.createReadStream(imgPath)
       }, event.threadID, () => fs.unlinkSync(imgPath));
 
