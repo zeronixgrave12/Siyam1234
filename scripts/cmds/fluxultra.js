@@ -6,7 +6,7 @@ module.exports.config = {
   name: "fluxultra",
   version: "1.0",
   role: 0,
-  author: "xrotick🥀",
+  author: "Amit Max ⚡",
   description: "Generate AI image using FluxUltra",
   category: "𝗜𝗠𝗔𝗚𝗘 𝗚𝗘𝗡𝗘𝗥𝗔𝗧𝗢𝗥",
   guide: "{pn} [prompt]\nExample: {pn} a cute dog with sunglasses",
@@ -15,15 +15,17 @@ module.exports.config = {
 
 module.exports.onStart = async ({ event, args, api }) => {
   const apiUrl = "https://zaikyoov3.koyeb.app/api/fluxultra";
-  const prompt = args.join(" ");
+  let userPrompt = args.join(" ");
 
-  if (!prompt) {
-    return api.sendMessage("Please provide a prompt.\nExample: i3 a dragon in space", event.threadID, event.messageID);
+  if (!userPrompt) {
+    return api.sendMessage("Please provide a prompt.\nExample: fluxultra a dragon in space", event.threadID, event.messageID);
   }
 
+  const prompt = `Amit Max ⚡, ${userPrompt}`; 
+
   try {
-    const waitMsg = await api.sendMessage("Generating your image, please wait...", event.threadID);
-    api.setMessageReaction("⌛", event.messageID, () => {}, true);
+    const waitMsg = await api.sendMessage("Generating your image, please wait...⏳", event.threadID);
+    api.setMessageReaction("⏰", event.messageID, () => {}, true);
 
     const response = await axios({
       url: `${apiUrl}?prompt=${encodeURIComponent(prompt)}`,
@@ -38,7 +40,7 @@ module.exports.onStart = async ({ event, args, api }) => {
 
     writer.on("finish", () => {
       api.sendMessage({
-        body: `Here is your AI-generated image for: "${prompt}"`,
+        body: `Here is your AI-generated image for: "${userPrompt}" (8k quality)`,
         attachment: fs.createReadStream(imgPath)
       }, event.threadID, () => fs.unlinkSync(imgPath));
 
@@ -49,9 +51,8 @@ module.exports.onStart = async ({ event, args, api }) => {
     writer.on("error", err => {
       throw new Error("Error saving image stream.");
     });
-
   } catch (err) {
-    console.error("Error in i3 command:", err);
+    console.error("Error in fluxultra command:", err);
     api.sendMessage("Failed to generate image. Try again later.", event.threadID, event.messageID);
   }
 };
