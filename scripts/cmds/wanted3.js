@@ -3,8 +3,8 @@ const fs = require("fs-extra");
 
 module.exports = {
   config: {
-    name: "wanted3",
-    aliases:["wan3"],
+    name: "wanted",
+    aliases:["wan"],
     version: "1.1",
     author: "NTKhang",
     countDown: 5,
