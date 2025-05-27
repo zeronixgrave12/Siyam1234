@@ -9,7 +9,7 @@ module.exports = {
   config: {
     name: "ping",
     version: "1.0",
-    author: "Rexy",
+    author: "Rex",
     countDown: 5,
     role: 0,
     shortDescription: "Check bot speed!",
