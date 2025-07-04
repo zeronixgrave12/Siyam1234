@@ -5,96 +5,121 @@ module.exports = {
   config: {
     name: "help",
     version: "1.0",
-    author: "NTkhang",
-    countDown: 1,
+    author: "Amit Max ⚡",
+    countDown: 5,
     role: 0,
-    shortDescription: "Get a list of all commands or command details.",
-    longDescription: "Displays a categorized list of commands or detailed information about a specific command.",
-    category: "general",
-    guide: "{pn} or {pn} <command>",
+    shortDescription: { en: "Show all command list" },
+    longDescription: { en: "Display categorized commands with usage" },
+    category: "info",
+    guide: { en: "{pn} [category or command name]" }
   },
 
   onStart: async function ({ message, args, event, role }) {
     const prefix = getPrefix(event.threadID);
+    const rawInput = args.join(" ").trim().toLowerCase();
+    const categories = {};
 
-    if (!args[0]) {
-      const categories = {};
-      commands.forEach((cmd, name) => {
-        if (cmd.config.role > role) return;
-        const category = cmd.config.category || "Others";
-        if (!categories[category]) categories[category] = [];
-        categories[category].push(name);
-      });
+    // Organize commands into categories
+    for (const [name, value] of commands) {
+      if (!value?.config || typeof value.onStart !== "function") continue;
+      if (value.config.role > 1 && role < value.config.role) continue;
 
-      function formatCommands(commandsArray) {
-        const rows = [];
-        for (let i = 0; i < commandsArray.length; i += 3) {
-          rows.push(commandsArray.slice(i, i + 3).join(" ❃ "));
+      const category = (value.config.category || "Uncategorized").toUpperCase();
+      if (!categories[category]) categories[category] = [];
+      categories[category].push(name);
+    }
+
+    // 📚 Help for all categories
+    if (!rawInput) {
+      let msg = "╔══════ BOT HELP MENU ══════╗\n\n";
+      for (const category of Object.keys(categories).sort()) {
+        msg += `┍━━━[ ${category} ]\n┋`;
+
+        const cmds = categories[category].sort();
+        for (let i = 0; i < cmds.length; i++) {
+          msg += `〄 ${cmds[i]} `;
+          if ((i + 1) % 5 === 0 && i !== cmds.length - 1) msg += `\n┋`;
         }
-        return rows.join("\n| ❃ ");
+
+        msg += "\n┕━━━━━━━━━━━━◊\n";
       }
 
-      let response = "📜 Available Commands in Bot! \n\n";
-      Object.entries(categories).forEach(([category, cmdList]) => {
-        response += `| ${category.toUpperCase()} |\n`;
-        response += `| ❃ ${formatCommands(cmdList)}\n\n`;
-      });
+      msg += `Total commands: ${commands.size}\n`;
+      msg += `Prefix: ${prefix}\n`;
+      msg += `Owner: set your name`;
 
-      const totalCommands = commands.size;
-
-      response += `⚒️ Bot has: ${totalCommands} Commands\n`;
-      response += `🛸 Prefix: ${prefix}\n`;
-      response += `👑 Owner: ×͜× Your Name\n\n`;
-      response += `Type '${prefix}help <cmdName>' to see detailed information about a specific command.`;
-
-      const sentMessage = await message.reply(response);
-
-      setTimeout(() => {
-        message.unsend(sentMessage.messageID);
-      }, 360000);
-
+      const sent = await message.reply(msg);
+      setTimeout(() => message.unsend(sent.messageID), 120000);
       return;
     }
 
-    const configCommand = commands.get(args[0]) || aliases.get(args[0]);
-    if (!configCommand) return message.reply(`⚠️ Command '${args[0]}' not found.`);
+    // 🔍 Help for category
+    if (rawInput.startsWith("[") && rawInput.endsWith("]")) {
+      const categoryName = rawInput.slice(1, -1).toUpperCase();
+      const list = categories[categoryName];
 
-    const roleText = getRoleName(configCommand.config.role);
-    const author = configCommand.config.author || "Unknown";
-    const description = configCommand.config.longDescription || configCommand.config.shortDescription || "No description available.";
-    const usage = (configCommand.config.guide || "No guide available.")
-      .replace(/{pn}/g, prefix + configCommand.config.name)
-      .replace(/{p}/g, prefix)
-      .replace(/{n}/g, configCommand.config.name);
+      if (!list) {
+        return message.reply(`❌ Category "${categoryName}" not found.\nAvailable: ${Object.keys(categories).map(c => `[${c}]`).join(", ")}`);
+      }
 
-    let msg = `📜 Command information 🔖\n\n`;
-    msg += `📜 Name: ${configCommand.config.name}\n`;
-    msg += `🛸 Version: ${configCommand.config.version}\n`;
-    msg += `🔖 Permission: ${roleText}\n`;
-    msg += `👑 Author: ${author}\n`;
-    msg += `💠 Category: ${configCommand.config.category}\n`;
-    msg += `🌊 Description: ${description}\n`;
-    msg += `🏷️ Guide: ${usage}\n`;
-    msg += `🕰️ Cooldowns: ${configCommand.config.countDown} seconds\n`;
-    msg += `📜 Aliases: ${configCommand.config.aliases ? configCommand.config.aliases.join(", ") : "None"}\n`;
+      let msg = `┍━━━[ ${categoryName} ]\n┋`;
+      for (let i = 0; i < list.length; i++) {
+        msg += `〄 ${list[i]} `;
+        if ((i + 1) % 5 === 0 && i !== list.length - 1) msg += `\n┋`;
+      }
+      msg += "\n┕━━━━━━━━━━━━◊";
 
-    const sentMessage = await message.reply(msg);
+      const sent = await message.reply(msg);
+      setTimeout(() => message.unsend(sent.messageID), 120000);
+      return;
+    }
 
-    setTimeout(() => {
-      message.unsend(sentMessage.messageID);
-    }, 40000);
-  },
+    // 🧾 Help for specific command
+    const commandName = rawInput;
+    const cmd = commands.get(commandName) || commands.get(aliases.get(commandName));
+    if (!cmd || !cmd.config) {
+      return message.reply(`❌ Command "${commandName}" not found.\nTry: /help`);
+    }
+
+    const config = cmd.config;
+    const usage = (config.guide?.en || "No usage").replace(/{pn}/g, `${prefix}${config.name}`);
+    const desc = config.longDescription?.en || config.shortDescription?.en || "No description";
+    const roleText = roleTextToString(config.role);
+
+    const info = `
+╭───⊙
+│ 🔶 ${stylizeSmallCaps(config.name)}
+├── INFO
+│ 📝 Description: ${desc}
+│ 👑 Author: ${config.author || "Unknown"}
+│ ⚙ Guide: ${usage}
+├── USAGE
+│ 🔯 Version: ${config.version || "1.0"}
+│ ♻ Role: ${roleText}
+╰────────────⊙`;
+
+    const sent = await message.reply(info);
+    setTimeout(() => message.unsend(sent.messageID), 120000);
+  }
 };
 
-function getRoleName(role) {
+// 🔠 Font: Small Caps
+function stylizeSmallCaps(text) {
+  const map = {
+    a: 'ᴀ', b: 'ʙ', c: 'ᴄ', d: 'ᴅ', e: 'ᴇ', f: 'ꜰ', g: 'ɢ', h: 'ʜ', i: 'ɪ',
+    j: 'ᴊ', k: 'ᴋ', l: 'ʟ', m: 'ᴍ', n: 'ɴ', o: 'ᴏ', p: 'ᴘ', q: 'ǫ', r: 'ʀ',
+    s: 'ꜱ', t: 'ᴛ', u: 'ᴜ', v: 'ᴠ', w: 'ᴡ', x: 'x', y: 'ʏ', z: 'ᴢ'
+  };
+  return text.split('').map(c => map[c.toLowerCase()] || c).join('');
+}
+
+// 🔓 Role text
+function roleTextToString(role) {
   switch (role) {
-    case 0:
-      return "Everyone";
-    case 1:
-      return "Group Admins";
-    case 2:
-      return "Bot Admins";
-    default:
-      return "Unknown Role";
+    case 0: return "Everyone";
+    case 1: return "Group Admin";
+    case 2: return "Bot Admin";
+    case 3: return "Super Admin";
+    default: return `${role}`;
   }
-                      }
+}
