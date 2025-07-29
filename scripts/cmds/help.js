@@ -46,7 +46,7 @@ module.exports = {
 
       msg += `Total commands: ${commands.size}\n`;
       msg += `Prefix: ${prefix}\n`;
-      msg += `Owner: siyam`;
+      msg += `Owner: SIYAM`;
 
       const sent = await message.reply(msg);
       setTimeout(() => message.unsend(sent.messageID), 120000);
@@ -111,15 +111,4 @@ function stylizeSmallCaps(text) {
     s: 'ꜱ', t: 'ᴛ', u: 'ᴜ', v: 'ᴠ', w: 'ᴡ', x: 'x', y: 'ʏ', z: 'ᴢ'
   };
   return text.split('').map(c => map[c.toLowerCase()] || c).join('');
-}
-
-// 🔓 Role text
-function roleTextToString(role) {
-  switch (role) {
-    case 0: return "Everyone";
-    case 1: return "Group Admin";
-    case 2: return "Bot Admin";
-    case 3: return "Super Admin";
-    default: return `${role}`;
-  }
-}
+              }
