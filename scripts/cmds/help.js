@@ -46,7 +46,7 @@ module.exports = {
 
       msg += `Total commands: ${commands.size}\n`;
       msg += `Prefix: ${prefix}\n`;
-      msg += `Owner: set your name`;
+      msg += `Owner: siyam`;
 
       const sent = await message.reply(msg);
       setTimeout(() => message.unsend(sent.messageID), 120000);
